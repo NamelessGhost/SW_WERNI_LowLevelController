@@ -1,0 +1,16 @@
+../os/Message.cpp:19:1:Message::Message()	1
+../os/Message.cpp:24:6:static void Message::init(MsgPool*)	1
+../os/Message.cpp:29:10:static Message* Message::reserve(uint8_t, uint8_t)	2
+../os/Message.cpp:40:10:static Message* Message::reserve(uint8_t, uint8_t, size_t)	4
+../os/Message.cpp:55:10:static Message* Message::reserve(uint8_t, uint8_t, DataUnion)	2
+../os/Message.cpp:67:10:static Message* Message::reserveIsr(uint8_t, uint8_t, uint32_t)	2
+../os/Message.cpp:78:6:void Message::sendMsg()	4
+../os/Message.cpp:103:6:void Message::freeMsg()	5
+../os/Message.cpp:129:9:uint8_t Message::id()	1
+../os/Message.cpp:134:9:uint8_t Message::src()	1
+../os/Message.cpp:139:9:uint8_t Message::dst()	1
+../os/Message.cpp:144:9:uint8_t Message::type()	1
+../os/Message.cpp:149:11:DataUnion Message::data()	2
+../os/Message.cpp:160:12:SharedMem* Message::mem()	2
+../os/Message.cpp:170:10:uint32_t Message::value()	1
+../os/Message.cpp:175:6:void Message::setValue(uint32_t)	1

@@ -1,0 +1,7 @@
+../os/MsgPool.cpp:12:6:void MsgPool_init()	1
+../os/MsgPool.cpp:19:1:MsgPool::MsgPool()	2
+../os/MsgPool.cpp:29:1:MsgPool::~MsgPool()	3
+../os/MsgPool.cpp:29:1:virtual MsgPool::~MsgPool()	1
+../os/MsgPool.cpp:37:10:static MsgPool* MsgPool::instance()	2
+../os/MsgPool.cpp:46:10:static Message* MsgPool::resMsg()	3
+../os/MsgPool.cpp:63:6:static void MsgPool::freeMsg(Message*)	4

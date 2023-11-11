@@ -1,0 +1,5 @@
+../os/Mutex.cpp:10:1:Mutex::Mutex()	16	static
+../os/Mutex.cpp:15:1:Mutex::~Mutex()	16	static
+../os/Mutex.cpp:15:1:virtual Mutex::~Mutex()	16	static
+../os/Mutex.cpp:20:6:void Mutex::lock(uint8_t)	16	static
+../os/Mutex.cpp:26:6:void Mutex::unlock()	16	static
