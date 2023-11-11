@@ -22,6 +22,7 @@
 enum TaskId
 {
   NoTask,
+  TemplateTaskId
 //  PeriodicCanTaskId,
 //  LopTaskId
 };

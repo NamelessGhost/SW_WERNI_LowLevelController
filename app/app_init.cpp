@@ -7,7 +7,7 @@
 
 //#include "LopTask.h"
 #include "app_init.h"
-
+#include "TemplateTask.h"
 
 int app_init_done = 0;
 
@@ -15,7 +15,7 @@ void app_init()
 {
   /////////////////    create tasks
 
-
+  TemplateTask::instance();
 
   //Periodic CAN timer task
 //  CanTask::instance();

@@ -16,8 +16,7 @@
 
 #define MSG_ID_START                1
 #define MSG_ID_TIMEOUT              2
-#define MSG_ID_CAN_RECIEVED         3
-#define MSG_ID_ISR_GPIO             4
+#define MSG_ID_TEMPLATETASK_EVENT   3
 
 enum MsgType
 {

@@ -5,12 +5,15 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
+../app/TemplateTask.cpp \
 ../app/app_init.cpp 
 
 OBJS += \
+./app/TemplateTask.o \
 ./app/app_init.o 
 
 CPP_DEPS += \
+./app/TemplateTask.d \
 ./app/app_init.d 
 
 
@@ -21,7 +24,7 @@ app/%.o app/%.su app/%.cyclo: ../app/%.cpp app/subdir.mk
 clean: clean-app
 
 clean-app:
-	-$(RM) ./app/app_init.cyclo ./app/app_init.d ./app/app_init.o ./app/app_init.su
+	-$(RM) ./app/TemplateTask.cyclo ./app/TemplateTask.d ./app/TemplateTask.o ./app/TemplateTask.su ./app/app_init.cyclo ./app/app_init.d ./app/app_init.o ./app/app_init.su
 
 .PHONY: clean-app
 

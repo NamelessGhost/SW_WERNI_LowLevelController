@@ -1,5 +1,5 @@
-app/app_init.o: ../app/app_init.cpp ../app/app_init.h \
- ../app/TemplateTask.h ../os/TaskClass.h \
+app/TemplateTask.o: ../app/TemplateTask.cpp ../app/TemplateTask.h \
+ ../os/TaskClass.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h \
  ../Core/Inc/FreeRTOSConfig.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h \
@@ -17,7 +17,6 @@ app/app_init.o: ../app/app_init.cpp ../app/app_init.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h \
  ../os/Message.h ../os/MsgDef.h
-../app/app_init.h:
 ../app/TemplateTask.h:
 ../os/TaskClass.h:
 ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h:
