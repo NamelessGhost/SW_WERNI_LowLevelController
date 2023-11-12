@@ -16,7 +16,8 @@ app/ComHandlerTask.o: ../app/ComHandlerTask.cpp ../app/ComHandlerTask.h \
  ../os/Mutex.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h \
- ../os/Message.h ../os/MsgDef.h ../os/Timer.h ../Core/Inc/main.h \
+ ../os/Message.h ../os/MsgDef.h ../os/Timer.h ../app/Stepper.h \
+ ../Core/Inc/InterruptRouting.h ../Core/Inc/tim.h ../Core/Inc/main.h \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal.h \
  ../Core/Inc/stm32g4xx_hal_conf.h \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_rcc.h \
@@ -43,7 +44,8 @@ app/ComHandlerTask.o: ../app/ComHandlerTask.cpp ../app/ComHandlerTask.h \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_pwr.h \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_pwr_ex.h \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_tim.h \
- ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_tim_ex.h
+ ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_tim_ex.h \
+ ../Core/Inc/tim.h ../Core/Inc/main.h
 ../app/ComHandlerTask.h:
 ../os/TaskClass.h:
 ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h:
@@ -65,6 +67,9 @@ app/ComHandlerTask.o: ../app/ComHandlerTask.cpp ../app/ComHandlerTask.h \
 ../os/Message.h:
 ../os/MsgDef.h:
 ../os/Timer.h:
+../app/Stepper.h:
+../Core/Inc/InterruptRouting.h:
+../Core/Inc/tim.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal.h:
 ../Core/Inc/stm32g4xx_hal_conf.h:
@@ -93,3 +98,5 @@ app/ComHandlerTask.o: ../app/ComHandlerTask.cpp ../app/ComHandlerTask.h \
 ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_pwr_ex.h:
 ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_tim.h:
 ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_tim_ex.h:
+../Core/Inc/tim.h:
+../Core/Inc/main.h:

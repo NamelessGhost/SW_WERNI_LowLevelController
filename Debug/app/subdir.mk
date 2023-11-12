@@ -6,16 +6,19 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
 ../app/ComHandlerTask.cpp \
+../app/Stepper.cpp \
 ../app/TemplateTask.cpp \
 ../app/app_init.cpp 
 
 OBJS += \
 ./app/ComHandlerTask.o \
+./app/Stepper.o \
 ./app/TemplateTask.o \
 ./app/app_init.o 
 
 CPP_DEPS += \
 ./app/ComHandlerTask.d \
+./app/Stepper.d \
 ./app/TemplateTask.d \
 ./app/app_init.d 
 
@@ -27,7 +30,7 @@ app/%.o app/%.su app/%.cyclo: ../app/%.cpp app/subdir.mk
 clean: clean-app
 
 clean-app:
-	-$(RM) ./app/ComHandlerTask.cyclo ./app/ComHandlerTask.d ./app/ComHandlerTask.o ./app/ComHandlerTask.su ./app/TemplateTask.cyclo ./app/TemplateTask.d ./app/TemplateTask.o ./app/TemplateTask.su ./app/app_init.cyclo ./app/app_init.d ./app/app_init.o ./app/app_init.su
+	-$(RM) ./app/ComHandlerTask.cyclo ./app/ComHandlerTask.d ./app/ComHandlerTask.o ./app/ComHandlerTask.su ./app/Stepper.cyclo ./app/Stepper.d ./app/Stepper.o ./app/Stepper.su ./app/TemplateTask.cyclo ./app/TemplateTask.d ./app/TemplateTask.o ./app/TemplateTask.su ./app/app_init.cyclo ./app/app_init.d ./app/app_init.o ./app/app_init.su
 
 .PHONY: clean-app
 

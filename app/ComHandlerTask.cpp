@@ -14,11 +14,15 @@ ComHandlerTask* ComHandlerTask::mspThis = 0;
 
 ComHandlerTask::ComHandlerTask(TaskId id, const char* name): Task(id, name)
 {
-  //Message::reserveIsr(MSG_ID_TEMPLATETASK_EVENT, ComHandlerTaskId, 0);
+  mpIsrEventMsg = Message::reserveIsr(MSG_ID_TEMPLATETASK_EVENT, ComHandlerTaskId, 0);
   mpTimerLed = new Timer(ComHandlerTaskId, TimerComLed);
   mpTimerLed->setInterval(500);
   mpTimerLed->setSingleShot(false);
   mpTimerLed->start();
+
+  mpStepper = new Stepper(TIM_CHANNEL_1);
+  mpStepper->StartRotation(100);
+
 }
 
 ComHandlerTask* ComHandlerTask::instance()

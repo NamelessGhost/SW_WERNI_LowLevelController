@@ -10,6 +10,8 @@
 #include "TaskClass.h"
 #include "Timer.h"
 
+#include "Stepper.h"
+
 
 class ComHandlerTask: public Task
 {
@@ -25,6 +27,8 @@ private:
   static ComHandlerTask* mspThis;
   Timer* mpTimerLed;
   Message* mpIsrEventMsg;
+
+  Stepper* mpStepper;
 };
 
 #endif /* COMHANDLERTASK_H_ */
