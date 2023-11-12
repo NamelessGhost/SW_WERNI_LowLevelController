@@ -16,7 +16,7 @@ app/app_init.o: ../app/app_init.cpp ../app/app_init.h \
  ../os/Mutex.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h \
- ../os/Message.h ../os/MsgDef.h
+ ../os/Message.h ../os/MsgDef.h ../app/ComHandlerTask.h ../os/Timer.h
 ../app/app_init.h:
 ../app/TemplateTask.h:
 ../os/TaskClass.h:
@@ -38,3 +38,5 @@ app/app_init.o: ../app/app_init.cpp ../app/app_init.h \
 ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h:
 ../os/Message.h:
 ../os/MsgDef.h:
+../app/ComHandlerTask.h:
+../os/Timer.h:

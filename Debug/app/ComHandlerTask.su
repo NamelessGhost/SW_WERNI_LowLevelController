@@ -1,0 +1,6 @@
+../app/ComHandlerTask.cpp:15:1:ComHandlerTask::ComHandlerTask(TaskId, const char*)	32	static
+../app/ComHandlerTask.cpp:24:17:static ComHandlerTask* ComHandlerTask::instance()	16	static
+../app/ComHandlerTask.cpp:33:6:static void ComHandlerTask::someEvent()	8	static
+../app/ComHandlerTask.cpp:39:6:virtual void ComHandlerTask::handleMessage(Message*)	24	static
+../app/ComHandlerTask.h:14:7:ComHandlerTask::~ComHandlerTask()	16	static
+../app/ComHandlerTask.h:14:7:virtual ComHandlerTask::~ComHandlerTask()	16	static

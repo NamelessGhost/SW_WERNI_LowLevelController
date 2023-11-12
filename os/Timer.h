@@ -16,11 +16,7 @@
 enum TimerId
 {
   TimerInvalid,
-  TimerCanPeriodic,
-  TimerBtnUp,
-  TimerBtnDown,
-  TimerCanOpenHeartbeat,
-  TimerWallboxPeriodic
+  TimerComLed,
 };
 
 class Timer
