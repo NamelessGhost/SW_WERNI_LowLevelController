@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include "ComHandlerTask.h"
 #include "main.h"
+#include "paradef.h"
 
 ComHandlerTask* ComHandlerTask::mspThis = 0;
 
@@ -21,7 +22,7 @@ ComHandlerTask::ComHandlerTask(TaskId id, const char* name): Task(id, name)
   mpTimerLed->start();
 
   mpStepper = new Stepper(TIM_CHANNEL_1);
-  mpStepper->StartRotation(100);
+  mpStepper->StartRotation(_2PI);
 
 }
 

@@ -45,7 +45,7 @@ app/ComHandlerTask.o: ../app/ComHandlerTask.cpp ../app/ComHandlerTask.h \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_pwr_ex.h \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_tim.h \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_tim_ex.h \
- ../Core/Inc/tim.h ../Core/Inc/main.h
+ ../Core/Inc/tim.h ../Core/Inc/main.h ../app/paradef.h
 ../app/ComHandlerTask.h:
 ../os/TaskClass.h:
 ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h:
@@ -100,3 +100,4 @@ app/ComHandlerTask.o: ../app/ComHandlerTask.cpp ../app/ComHandlerTask.h \
 ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_tim_ex.h:
 ../Core/Inc/tim.h:
 ../Core/Inc/main.h:
+../app/paradef.h:
