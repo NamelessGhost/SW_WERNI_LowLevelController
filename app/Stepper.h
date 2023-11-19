@@ -62,6 +62,7 @@ private:
   float mCurrentRotationAngle;
   float mTargetRotationAngle;
   float mAngularAcceleration;
+  float mRolloutAngle;
 
   //Steps in step signal
   int32_t mStepsRotated;

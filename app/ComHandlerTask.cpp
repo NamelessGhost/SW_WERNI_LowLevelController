@@ -22,7 +22,7 @@ ComHandlerTask::ComHandlerTask(TaskId id, const char* name): Task(id, name)
   mpTimerLed->start();
 
   mpStepper = new Stepper(TIM_CHANNEL_1);
-  mpStepper->StartRotation(_2PI);
+  mpStepper->StartRotation(2*_2PI);
 
 }
 

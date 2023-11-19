@@ -23,12 +23,13 @@ Stepper::Stepper(uint32_t timerChannel) : Iinterruptable()
   mStepOutputState = OUTPUT_LOW;
 
   mStartAngularVelocity = 0.1 * PI;     //in rad/s
-  mTargetAngularVelocity = 30 * PI;     //in rad/s
-  mAngularAcceleration = 2 * PI;        //in rad/s^2
+  mTargetAngularVelocity = 2 * PI;      //in rad/s
+  mAngularAcceleration = 4 * PI;        //in rad/s^2
   mCurrentAngularVeloctiy = 0;          //in rad/s
   mStepsRotated = 0;
   mCurrentRotationAngle = 0;
   mTargetRotationAngle = 0;
+  mRolloutAngle = PI/10;               //in rad
 
   mDriverStepFactor = 0.5;
   mMotorStepFactor = 1.0/200;
@@ -72,7 +73,7 @@ void Stepper::StopRotation()
 bool Stepper::IsTimeToStartDecelerating()
 {
   float lStopAngle = (mCurrentAngularVeloctiy * mCurrentAngularVeloctiy) / (2 * mAngularAcceleration);
-  return ( lStopAngle >= (mTargetRotationAngle - mCurrentRotationAngle) );
+  return ( (lStopAngle + mRolloutAngle) >= (mTargetRotationAngle - mCurrentRotationAngle) );
 }
 
 uint32_t Stepper::CalculateTicksUntilNextStep()
@@ -102,16 +103,23 @@ uint32_t Stepper::CalculateTicksUntilNextStep()
 
 
       case DECCELERATING:
+      {
+        float lRemainingAngle = (mTargetRotationAngle - mCurrentRotationAngle - mRolloutAngle);
         if(mCurrentAngularVeloctiy > mStartAngularVelocity)   //We still need to decelerate
         {
-          mCurrentAngularVeloctiy = mStartAngularVelocity -
-                                  ( mAngularAcceleration *
-                                    std::sqrt( (2 * mCurrentRotationAngle) / mAngularAcceleration) );
+          mCurrentAngularVeloctiy = mAngularAcceleration *
+                                    std::sqrt( (2 * lRemainingAngle) / mAngularAcceleration);
+
+          if(mCurrentAngularVeloctiy < mStartAngularVelocity) //Limit minimum velocity to prevent large period times
+          {
+            mCurrentAngularVeloctiy = mStartAngularVelocity;
+          }
         }
         else
         {
           mRotationState = ROLLOUT;
         }
+      }
         break;
 
       case ROLLOUT:
@@ -127,7 +135,7 @@ uint32_t Stepper::CalculateTicksUntilNextStep()
         break;
     }
 
-  velocitySWV = (uint32_t)mCurrentAngularVeloctiy;  //TODO:Remove DEBUG
+  velocitySWV = (uint32_t)(mCurrentAngularVeloctiy*10000);  //TODO:Remove DEBUG
 
   if(mCurrentAngularVeloctiy > 0)
   {
