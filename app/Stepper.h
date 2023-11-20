@@ -32,11 +32,30 @@ enum OutputState {
   OUTPUT_HIGH
 };
 
+typedef struct {
+  //Physical parameters
+  float StartAngularVelocity;     //in rad/s
+  float TargetAngularVelocity;      //in rad/s
+  float AngularAcceleration;        //in rad/s^2
+  float RolloutAngle;               //in rad
+
+  //GPIO parameters
+  GPIO_TypeDef* pGpioStepOutput;
+  uint16_t GpioPinStepOutput;
+
+  //Stepper driver parameters
+  float DriverStepFactor = 0.5;
+  float MotorStepFactor = 1.0/200;
+}StepperConfig_t;
+
 
 class Stepper : public Iinterruptable
 {
 public:
   Stepper(uint32_t timerChannel);
+  static StepperConfig_t GetDefaultConfiguration();
+  StepperConfig_t GetConfiguration();
+  void SetConfiguration(StepperConfig_t config);
   void StartRotation(float angle);    //Postitve -> CW  Negative -> CCW
   void StopRotation();
   void OutputCompareIntCb(TIM_HandleTypeDef* htim) override;
@@ -44,13 +63,14 @@ public:
 protected:
 
 private:
+  void ReserveTimerChannel();
   uint32_t CalculateTicksUntilNextStep();
   bool IsTimeToStartDecelerating();
+  static uint32_t sUsedTimerChannels;
   TIM_HandleTypeDef* mpTimerHandle;
   uint32_t mTimerChannel;
   GPIO_TypeDef* mpGpioStepOutput;
   uint16_t mGpioPinStepOutput;
-
 
   StepperState mStepperState;
   RotationState mRotationState;
