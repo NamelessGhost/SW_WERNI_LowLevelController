@@ -21,7 +21,10 @@ ComHandlerTask::ComHandlerTask(TaskId id, const char* name): Task(id, name)
   mpTimerLed->setSingleShot(false);
   mpTimerLed->start();
 
-  mpStepper = new Stepper(TIM_CHANNEL_1);
+  StepperConfig_t conf = Stepper::GetDefaultConfiguration();
+  conf.pGpioStepOutput = GPIOC;
+  conf.GpioPinStepOutput = GPIO_PIN_0;
+  mpStepper = new Stepper(conf);
   mpStepper->StartRotation(2*_2PI);
 
 }

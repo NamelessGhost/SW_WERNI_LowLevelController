@@ -34,7 +34,7 @@ enum OutputState {
 
 typedef struct {
   //Physical parameters
-  float StartAngularVelocity;     //in rad/s
+  float StartAngularVelocity;       //in rad/s
   float TargetAngularVelocity;      //in rad/s
   float AngularAcceleration;        //in rad/s^2
   float RolloutAngle;               //in rad
@@ -53,7 +53,7 @@ class Stepper : public Iinterruptable
 {
 public:
   //**** Function prototypes ****
-  Stepper(uint32_t timerChannel);
+  Stepper(StepperConfig_t config);
   static StepperConfig_t GetDefaultConfiguration();
   StepperConfig_t GetConfiguration();
   void SetConfiguration(StepperConfig_t config);

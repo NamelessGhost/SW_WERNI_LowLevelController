@@ -1,5 +1,0 @@
-Mutex.cpp:10:1:Mutex::Mutex()	1
-Mutex.cpp:15:1:Mutex::~Mutex()	1
-Mutex.cpp:15:1:virtual Mutex::~Mutex()	1
-Mutex.cpp:20:6:void Mutex::lock(uint8_t)	1
-Mutex.cpp:26:6:void Mutex::unlock()	1

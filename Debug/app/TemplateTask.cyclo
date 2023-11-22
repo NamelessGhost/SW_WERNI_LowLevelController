@@ -1,6 +1,0 @@
-TemplateTask.cpp:14:1:TemplateTask::TemplateTask(TaskId, const char*)	1
-TemplateTask.cpp:19:15:static TemplateTask* TemplateTask::instance()	2
-TemplateTask.cpp:28:6:static void TemplateTask::someEvent()	1
-TemplateTask.cpp:34:6:virtual void TemplateTask::handleMessage(Message*)	1
-TemplateTask.h:13:7:TemplateTask::~TemplateTask()	1
-TemplateTask.h:13:7:virtual TemplateTask::~TemplateTask()	1

@@ -1,9 +1,0 @@
-../os/Timer.cpp:15:1:Timer::Timer(TaskId, TimerId)	32	static,ignoring_inline_asm
-../os/Timer.cpp:24:1:Timer::~Timer()	24	static
-../os/Timer.cpp:24:1:virtual Timer::~Timer()	16	static
-../os/Timer.cpp:29:6:static void Timer::CallbackFunction(TimerHandle_t)	32	static
-../os/Timer.cpp:38:6:void Timer::setInterval(int)	24	static
-../os/Timer.cpp:43:6:void Timer::setSingleShot(bool)	16	static
-../os/Timer.cpp:48:6:void Timer::start()	40	static
-../os/Timer.cpp:66:6:void Timer::stop()	24	static
-../os/Timer.cpp:71:6:bool Timer::isInterrupt()	16	static

@@ -1,9 +1,0 @@
-Timer.cpp:15:1:Timer::Timer(TaskId, TimerId)	2
-Timer.cpp:24:1:Timer::~Timer()	1
-Timer.cpp:24:1:virtual Timer::~Timer()	1
-Timer.cpp:29:6:static void Timer::CallbackFunction(TimerHandle_t)	1
-Timer.cpp:38:6:void Timer::setInterval(int)	1
-Timer.cpp:43:6:void Timer::setSingleShot(bool)	1
-Timer.cpp:48:6:void Timer::start()	3
-Timer.cpp:66:6:void Timer::stop()	1
-Timer.cpp:71:6:bool Timer::isInterrupt()	1
