@@ -1,7 +1,7 @@
 /*
  * Filename: Stepper.h
  * Author: André Krummenacher
- * Date: 12.11.2023
+ * Date: 22.11.2023
  */
 
 #ifndef STEPPER_H_
@@ -52,6 +52,7 @@ typedef struct {
 class Stepper : public Iinterruptable
 {
 public:
+  //**** Function prototypes ****
   Stepper(uint32_t timerChannel);
   static StepperConfig_t GetDefaultConfiguration();
   StepperConfig_t GetConfiguration();
@@ -63,9 +64,12 @@ public:
 protected:
 
 private:
+  //**** Function prototypes ****
   void ReserveTimerChannel();
   uint32_t CalculateTicksUntilNextStep();
   bool IsTimeToStartDecelerating();
+
+  //**** Variables ****
   static uint32_t sUsedTimerChannels;
   TIM_HandleTypeDef* mpTimerHandle;
   uint32_t mTimerChannel;
@@ -94,9 +98,6 @@ private:
 
   //For Debug
   volatile uint32_t velocitySWV;
-
-
-
 };
 
 #endif /* STEPPER_H_ */

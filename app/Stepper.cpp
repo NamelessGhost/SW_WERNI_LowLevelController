@@ -1,7 +1,7 @@
 /*
  * Filename: Stepper.cpp
  * Author: André Krummenacher
- * Date: 12.11.2023
+ * Date: 22.11.2023
  * Description: Stepper Motor
  */
 
