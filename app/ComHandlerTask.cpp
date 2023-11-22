@@ -5,13 +5,22 @@
  * Description: Template of a Task to serve as a starting point
  */
 
-#include <string.h>
+#include <string>
 #include <stdio.h>
+#include <map>
 #include "ComHandlerTask.h"
 #include "main.h"
 #include "paradef.h"
+#include "mjson.h"
 
 ComHandlerTask* ComHandlerTask::mspThis = 0;
+
+enum colors{
+  COLOR_BLANK,
+  COLOR_RED,
+  COLOR_YELLOW,
+  COLOR_BLUE
+};
 
 ComHandlerTask::ComHandlerTask(TaskId id, const char* name): Task(id, name)
 {
@@ -21,11 +30,40 @@ ComHandlerTask::ComHandlerTask(TaskId id, const char* name): Task(id, name)
   mpTimerLed->setSingleShot(false);
   mpTimerLed->start();
 
+  //Just testing some stuff here
   StepperConfig_t conf = Stepper::GetDefaultConfiguration();
   conf.pGpioStepOutput = GPIOC;
   conf.GpioPinStepOutput = GPIO_PIN_0;
   mpStepper = new Stepper(conf);
   mpStepper->StartRotation(2*_2PI);
+
+
+  std::string str = "{\n\"time\": \"2023-10-10 17:10:05\",\n\"config\": {\n\"1\": \"red\",\n\"2\": \"blue\",\n\"3\": \"red\",\n\"4\": \"yellow\",\n\"5\": \"\",\n\"6\": \"\",\n\"7\": \"yellow\",\n\"8\": \"red\"\n}\n}";
+
+  colors cubeColors[8];
+  std::map<std::string, int> colorMap;
+
+  colorMap[""] = COLOR_BLANK;
+  colorMap["red"] = COLOR_RED;
+  colorMap["yellow"] = COLOR_YELLOW;
+  colorMap["blue"] = COLOR_BLUE;
+
+  for(int i = 0; i <= 8; i++)
+  {
+    const char* buf;    //TODO:Check if this causes memory leak
+
+    std::string path = "$.config[\"" + std::to_string(i) + "\"]";
+    mjson_find(str.c_str(), str.length(), path.c_str(), &buf, NULL);
+
+    if(buf != nullptr)
+    {
+      cubeColors[i] = colorMap[buf];
+    }
+    assert_param(buf != nullptr);
+  }
+
+
+  //end
 
 }
 
