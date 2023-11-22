@@ -1,1 +1,1 @@
-../app/app_init.cpp:15:6:void app_init()	1
+app_init.cpp:15:6:void app_init()	1

@@ -1,7 +1,7 @@
 /*
  * Filename: Stepper.cpp
  * Author: André Krummenacher
- * Date: 12.11.2023
+ * Date: 22.11.2023
  * Description: Stepper Motor
  */
 
@@ -11,29 +11,97 @@
 #include "paradef.h"
 #include "cmath"
 
-Stepper::Stepper(uint32_t timerChannel) : Iinterruptable()
+uint32_t Stepper::sUsedTimerChannels = 0;
+
+Stepper::Stepper(StepperConfig_t config) : Iinterruptable()
 {
-  mTimerChannel = timerChannel;
+  SetConfiguration(config);  //Apply the configuration
+
   mpTimerHandle = STEPPER_STEP_TIMER_HANDLE;
-  mpGpioStepOutput = GPIOC;
-  mGpioPinStepOutput = GPIO_PIN_0;
+  ReserveTimerChannel();
 
   mStepperState = OFF;
   mRotationState = STANDSTILL;
   mStepOutputState = OUTPUT_LOW;
 
-  mStartAngularVelocity = 0.1 * PI;     //in rad/s
-  mTargetAngularVelocity = 2 * PI;      //in rad/s
-  mAngularAcceleration = 4 * PI;        //in rad/s^2
   mCurrentAngularVeloctiy = 0;          //in rad/s
-  mStepsRotated = 0;
-  mCurrentRotationAngle = 0;
+  mCurrentRotationAngle = 0;			//in rad/s
   mTargetRotationAngle = 0;
-  mRolloutAngle = PI/10;               //in rad
+  mStepsRotated = 0;
 
-  mDriverStepFactor = 0.5;
-  mMotorStepFactor = 1.0/200;
+
+}
+
+static StepperConfig_t Stepper::GetDefaultConfiguration()
+{
+  StepperConfig_t lDefaultConfig;
+
+  //Physical parameters
+  lDefaultConfig.StartAngularVelocity = STEPPER_START_ANGULAR_VELOCITY;   //rad/s
+  lDefaultConfig.TargetAngularVelocity = STEPPER_TARGET_ANGULAR_VELOCITY; //rad/s
+  lDefaultConfig.AngularAcceleration = STEPPER_ANGULAR_ACCELERATION;      //rad/s^2
+  lDefaultConfig.RolloutAngle = STEPPER_ROLLOUT_ANGLE;                    //rad
+
+  //GPIO parameters
+  lDefaultConfig.pGpioStepOutput = NULL;    //Step output GPIO peripheral pointer
+  lDefaultConfig.GpioPinStepOutput = 0x00;  //Step output GPIO pin
+
+  //Stepper driver parameters
+  lDefaultConfig.DriverStepFactor = STEPPER_DRIVER_STEP_FACTOR; //Half-stepping
+  lDefaultConfig.MotorStepFactor = STEPPER_MOTOR_STEP_FACTOR;   //Motor Steps/rotation
+
+  return lDefaultConfig;
+}
+
+void Stepper::ReserveTimerChannel()
+{
+  //Make sure a channel is available
+  if(sUsedTimerChannels < STEPPER_TIMER_MAX_CHANNELS)
+  {
+    sUsedTimerChannels++;
+    mTimerChannel = sUsedTimerChannels * 4;
+  }
+}
+
+StepperConfig_t Stepper::GetConfiguration()
+{
+  StepperConfig_t lConfig;
+
+  //Physical parameters
+  lConfig.StartAngularVelocity = mStartAngularVelocity;
+  lConfig.TargetAngularVelocity = mTargetAngularVelocity;
+  lConfig.AngularAcceleration = mAngularAcceleration;
+  lConfig.RolloutAngle = mRolloutAngle;
+
+  //GPIO parameters
+  lConfig.pGpioStepOutput = mpGpioStepOutput;
+  lConfig.GpioPinStepOutput = mGpioPinStepOutput;
+
+  //Stepper driver parameters
+  lConfig.DriverStepFactor = mDriverStepFactor;
+  lConfig.MotorStepFactor = mMotorStepFactor;
+
+  return lConfig;
+}
+
+void Stepper::SetConfiguration(StepperConfig_t config)
+{
+  //Physical parameters
+  mStartAngularVelocity = config.StartAngularVelocity;
+  mTargetAngularVelocity = config.TargetAngularVelocity;
+  mAngularAcceleration = config.AngularAcceleration;
+  mRolloutAngle = config.RolloutAngle;
+
+  //GPIO parameters
+  mpGpioStepOutput = config.pGpioStepOutput;
+  mGpioPinStepOutput = config.GpioPinStepOutput;
+
+  //Stepper driver parameters
+  mDriverStepFactor = config.DriverStepFactor;
+  mMotorStepFactor = config.MotorStepFactor;
+
   mDriveTrainFactor = mDriverStepFactor * mMotorStepFactor;
+  assert_param(mpGpioStepOutput != NULL);
 }
 
 void Stepper::StartRotation(float angle)
