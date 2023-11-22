@@ -32,7 +32,7 @@ Stepper::Stepper(StepperConfig_t config) : Iinterruptable()
 
 }
 
-static StepperConfig_t Stepper::GetDefaultConfiguration()
+StepperConfig_t Stepper::GetDefaultConfiguration()
 {
   StepperConfig_t lDefaultConfig;
 

@@ -1,8 +1,0 @@
-TaskList.cpp:12:6:void TaskList_init()	1
-TaskList.cpp:21:11:static TaskList* TaskList::instance()	2
-TaskList.cpp:30:1:TaskList::TaskList()	1
-TaskList.cpp:35:6:static void TaskList::createEntry(TaskId, char*, TaskHandle_t, QueueHandle_t)	3
-TaskList.cpp:52:8:static Mutex* TaskList::getMutex()	1
-TaskList.cpp:57:14:static tskTaskControlBlock* TaskList::getTaskHandle(TaskId)	3
-TaskList.cpp:71:8:static TaskId TaskList::getTaskId(TaskHandle_t)	3
-TaskList.cpp:85:15:static QueueDefinition* TaskList::getQueue(TaskId)	3

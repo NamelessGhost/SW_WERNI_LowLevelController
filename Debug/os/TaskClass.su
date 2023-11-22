@@ -1,4 +1,0 @@
-../os/TaskClass.cpp:14:1:Task::Task(TaskId, const char*)	40	static,ignoring_inline_asm
-../os/TaskClass.cpp:24:1:Task::~Task()	16	static
-../os/TaskClass.cpp:24:1:virtual Task::~Task()	16	static
-../os/TaskClass.cpp:29:6:static void Task::mainLoop(void*)	32	static

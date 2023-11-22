@@ -1,4 +1,0 @@
-TaskClass.cpp:14:1:Task::Task(TaskId, const char*)	2
-TaskClass.cpp:24:1:Task::~Task()	1
-TaskClass.cpp:24:1:virtual Task::~Task()	1
-TaskClass.cpp:29:6:static void Task::mainLoop(void*)	2
