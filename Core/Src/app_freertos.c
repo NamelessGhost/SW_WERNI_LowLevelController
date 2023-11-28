@@ -69,17 +69,20 @@ void vApplicationGetTimerTaskMemory( StaticTask_t **ppxTimerTaskTCBBuffer, Stack
 void configureTimerForRunTimeStats(void);
 unsigned long getRunTimeCounterValue(void);
 void vApplicationStackOverflowHook(xTaskHandle xTask, signed char *pcTaskName);
+void vApplicationMallocFailedHook(void);
 
 /* USER CODE BEGIN 1 */
 /* Functions needed when configGENERATE_RUN_TIME_STATS is on */
 __weak void configureTimerForRunTimeStats(void)
 {
-
+  CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
+  DWT->CTRL |= 1;
+  DWT->CYCCNT = 0;
 }
 
 __weak unsigned long getRunTimeCounterValue(void)
 {
-return 0;
+return DWT->CYCCNT;
 }
 /* USER CODE END 1 */
 
@@ -89,8 +92,26 @@ __weak void vApplicationStackOverflowHook(xTaskHandle xTask, signed char *pcTask
    /* Run time stack overflow checking is performed if
    configCHECK_FOR_STACK_OVERFLOW is defined to 1 or 2. This hook function is
    called if a stack overflow is detected. */
+  assert_param(0);
 }
 /* USER CODE END 4 */
+
+/* USER CODE BEGIN 5 */
+__weak void vApplicationMallocFailedHook(void)
+{
+   /* vApplicationMallocFailedHook() will only be called if
+   configUSE_MALLOC_FAILED_HOOK is set to 1 in FreeRTOSConfig.h. It is a hook
+   function that will get called if a call to pvPortMalloc() fails.
+   pvPortMalloc() is called internally by the kernel whenever a task, queue,
+   timer or semaphore is created. It is also called by various parts of the
+   demo application. If heap_1.c or heap_2.c are used, then the size of the
+   heap available to pvPortMalloc() is defined by configTOTAL_HEAP_SIZE in
+   FreeRTOSConfig.h, and the xPortGetFreeHeapSize() API function can be used
+   to query the size of free heap space that remains (although it does not
+   provide information on how the remaining heap might be fragmented). */
+  assert_param(0);
+}
+/* USER CODE END 5 */
 
 /* USER CODE BEGIN GET_IDLE_TASK_MEMORY */
 static StaticTask_t xIdleTaskTCBBuffer;
@@ -146,7 +167,7 @@ void MX_FREERTOS_Init(void) {
 
   /* Create the thread(s) */
   /* definition and creation of idleTask */
-  osThreadDef(idleTask, StartIdleTask, osPriorityIdle, 0, 128);
+  osThreadDef(idleTask, StartIdleTask, osPriorityIdle, 0, 256);
   idleTaskHandle = osThreadCreate(osThread(idleTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */

@@ -8,7 +8,7 @@
 #ifndef TASK_H_CLASS
 #define TASK_H_CLASS
 
-#define TASK_STACK_SIZE   0x100
+#define TASK_STACK_SIZE   0x200   //In words!
 
 #include <stdint.h>
 #include <FreeRTOS.h>

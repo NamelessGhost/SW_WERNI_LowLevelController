@@ -98,9 +98,9 @@ void MX_TIM1_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN TIM1_Init 2 */
-  HAL_TIM_Base_Start_IT(&htim1);
-  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 65535-1000);
-  HAL_TIM_OC_Start_IT(&htim1, TIM_CHANNEL_1);
+//  HAL_TIM_Base_Start_IT(&htim1);
+//  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 65535-1000);
+//  HAL_TIM_OC_Start_IT(&htim1, TIM_CHANNEL_1);
   /* USER CODE END TIM1_Init 2 */
 
 }
