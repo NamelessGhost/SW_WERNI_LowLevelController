@@ -7,7 +7,6 @@
 
 
 #include <stdio.h>
-#include <vector>
 #include "InterruptRouting.h"
 #include "main.h"
 

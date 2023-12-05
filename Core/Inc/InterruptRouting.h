@@ -8,6 +8,7 @@
 #ifndef INC_INTERRUPTROUTING_H_
 #define INC_INTERRUPTROUTING_H_
 
+#include <vector>
 #include "tim.h"
 
 /*This class creates an interface for routing interrupts to member functions*/

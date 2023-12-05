@@ -9,11 +9,12 @@
 
 #include "TaskClass.h"
 #include "Timer.h"
+#include "InterruptRouting.h"
 
 #include "Stepper.h"
 
 
-class ComHandlerTask: public Task
+class ComHandlerTask: public Task, public Iinterruptable
 {
 public:
   ComHandlerTask(TaskId id, const char* name);
