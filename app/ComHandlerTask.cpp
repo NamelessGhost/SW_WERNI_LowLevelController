@@ -18,31 +18,21 @@ ComHandlerTask::ComHandlerTask(TaskId id, const char* name)
 :Task(id, name)
 {
   mpIsrEventMsg = Message::reserveIsr(MSG_ID_TEMPLATETASK_EVENT, ComHandlerTaskId, 0);
-  mpTimerLed = new Timer(ComHandlerTaskId, TimerComLed);
-  mpTimerLed->setInterval(500);
-  mpTimerLed->setSingleShot(false);
-  mpTimerLed->start();
+  mpUpdateTimer = new Timer(ComHandlerTaskId, TimerComHandlerUpdate);
+  mpUpdateTimer->setInterval(10);
+  mpUpdateTimer->setSingleShot(false);
+  mpUpdateTimer->start();
 
-  StepperConfig_t conf = Stepper::GetDefaultConfiguration();
-  conf.pGpioStepOutput = GPIOC;
-  conf.GpioPinStepOutput = GPIO_PIN_0;
-  mpStepper = new Stepper(conf);
-  mpStepper->StartRotation(2*_2PI);
+  mpHuart = &hlpuart1;
 }
 
-ComHandlerTask* ComHandlerTask::instance()
+ComHandlerTask* ComHandlerTask::instance(void)
 {
   if(ComHandlerTask::mspThis == 0)
   {
     mspThis = new ComHandlerTask(ComHandlerTaskId, "ComHandlerTask\0");
   }
   return ComHandlerTask::mspThis;
-}
-
-void ComHandlerTask::someEvent()
-{
-  mspThis->mpIsrEventMsg->setValue(123);
-  mspThis->mpIsrEventMsg->sendMsg();
 }
 
 void ComHandlerTask::handleMessage(Message* message)
@@ -58,9 +48,12 @@ void ComHandlerTask::handleMessage(Message* message)
     {
       switch(message->data().longword)
       {
-        case TimerComLed:
-          HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+        case TimerComHandlerUpdate:
+          //HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+          TransmitPendingData();
+
           break;
+
         default:
           break;
       }
@@ -69,5 +62,39 @@ void ComHandlerTask::handleMessage(Message* message)
     default:
       break;
   }
+}
 
+void ComHandlerTask::ProcessReceivedData(void)
+{
+
+}
+
+void ComHandlerTask::SearchPreamble(void)
+{
+
+}
+
+void ComHandlerTask::TransmitPendingData(void)
+{
+  uint8_t txBuf;
+
+  while(mTxData.size() > 0)   //Check if data in transmit buffer
+  {
+    txBuf = mTxData.pop();
+    if(__HAL_UART_GET_FLAG(mpHuart,UART_FLAG_TXFNF) == true)
+    {
+      HAL_UART_Transmit_IT(mpHuart, &txBuf, 1U);
+    }
+  }
+}
+
+void ComHandlerTask::UartTxCompleteCb(UART_HandleTypeDef* huart)
+{
+  uint8_t rxBuf;
+
+  while(__HAL_UART_GET_FLAG(mpHuart,UART_FLAG_RXFNE) == true)   //Check if data in receive fifo
+  {
+    HAL_UART_Receive_IT(mpHuart, &rxBuf, 1U);
+    mRxData.push(rxBuf);
+  }
 }

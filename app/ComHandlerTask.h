@@ -9,6 +9,7 @@
 
 #include "TaskClass.h"
 #include "Timer.h"
+#include "usart.h"
 #include "InterruptRouting.h"
 
 #include "Stepper.h"
@@ -18,18 +19,24 @@ class ComHandlerTask: public Task, public Iinterruptable
 {
 public:
   ComHandlerTask(TaskId id, const char* name);
-  static ComHandlerTask* instance();
-  static void someEvent();
+  static ComHandlerTask* instance(void);
 
 protected:
   virtual void handleMessage(Message* message);
 
 private:
-  static ComHandlerTask* mspThis;
-  Timer* mpTimerLed;
-  Message* mpIsrEventMsg;
+  void TransmitPendingData(void);
+  void UartTxCompleteCb(UART_HandleTypeDef* huart);
+  void ProcessReceivedData(void);
+  void SearchPreamble(void);
 
-  Stepper* mpStepper;
+  static ComHandlerTask* mspThis;
+  Timer* mpUpdateTimer;
+  Message* mpIsrEventMsg;
+  UART_HandleTypeDef* mpHuart;
+
+  std::queue<uint8_t> mTxData;
+  std::queue<uint8_t> mRxData;
 };
 
 #endif /* COMHANDLERTASK_H_ */

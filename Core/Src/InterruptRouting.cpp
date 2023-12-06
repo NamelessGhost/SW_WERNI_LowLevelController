@@ -24,16 +24,40 @@ void Iinterruptable::OutputCompareIntCb(TIM_HandleTypeDef* htim)
   //Implement in derived class to use.
 }
 
+void Iinterruptable::UartTxCompleteCb(UART_HandleTypeDef* huart)
+{
+  //Implement in derived class to use.
+}
+
+void Iinterruptable::UartRxCompleteCb(UART_HandleTypeDef* huart)
+{
+  //Implement in derived class to use.
+}
+
 
 //************ C-Functions below ***************
 
 void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef* htim)
 {
-  if(htim->Instance == TIM1)
+  for(Iinterruptable* receiver : Iinterruptable::outputCompareIntReceivers)
   {
-    for(Iinterruptable* receiver : Iinterruptable::outputCompareIntReceivers)
-    {
-      receiver->OutputCompareIntCb(htim);
-    }
+    receiver->OutputCompareIntCb(htim);
   }
 }
+
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef* huart)
+{
+  for(Iinterruptable* receiver : Iinterruptable::outputCompareIntReceivers)
+  {
+    receiver->UartTxCompleteCb(huart);
+  }
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef* huart)
+{
+  for(Iinterruptable* receiver : Iinterruptable::outputCompareIntReceivers)
+  {
+    receiver->UartRxCompleteCb(huart);
+  }
+}
+//void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart);

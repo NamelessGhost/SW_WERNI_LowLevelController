@@ -16,7 +16,7 @@
 enum TimerId
 {
   TimerInvalid,
-  TimerComLed,
+  TimerComHandlerUpdate,
 };
 
 class Timer
