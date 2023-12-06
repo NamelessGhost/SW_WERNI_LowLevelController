@@ -10,10 +10,12 @@
 #include "ComHandlerTask.h"
 #include "main.h"
 #include "paradef.h"
+#include "InterruptRouting.h"
 
 ComHandlerTask* ComHandlerTask::mspThis = 0;
 
-ComHandlerTask::ComHandlerTask(TaskId id, const char* name): Task(id, name)
+ComHandlerTask::ComHandlerTask(TaskId id, const char* name)
+:Task(id, name)
 {
   mpIsrEventMsg = Message::reserveIsr(MSG_ID_TEMPLATETASK_EVENT, ComHandlerTaskId, 0);
   mpTimerLed = new Timer(ComHandlerTaskId, TimerComLed);
@@ -26,7 +28,6 @@ ComHandlerTask::ComHandlerTask(TaskId id, const char* name): Task(id, name)
   conf.GpioPinStepOutput = GPIO_PIN_0;
   mpStepper = new Stepper(conf);
   mpStepper->StartRotation(2*_2PI);
-
 }
 
 ComHandlerTask* ComHandlerTask::instance()
