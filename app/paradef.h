@@ -13,12 +13,12 @@
 #define STEPPER_TIMER_FREQUENCY           170000000   //Timer input clock
 #define STEPPER_TIMER_PRESCALER           850         //Timer internal prescaler
 #define STEPPER_TIMER_CNT_FREQUENCY STEPPER_TIMER_FREQUENCY / STEPPER_TIMER_PRESCALER
-#define STEPPER_TIMER_MAX_CHANNELS        6
+#define STEPPER_TIMER_MAX_CHANNELS        4
 
-#define STEPPER_START_ANGULAR_VELOCITY    0.1 * PI  //rad/s
+#define STEPPER_START_ANGULAR_VELOCITY    1 * PI  //rad/s
 #define STEPPER_TARGET_ANGULAR_VELOCITY   2 * PI    //rad/s
 #define STEPPER_ANGULAR_ACCELERATION      4 * PI    //rad/s^2
-#define STEPPER_ROLLOUT_ANGLE             PI / 10   //rad
+#define STEPPER_ROLLOUT_ANGLE             PI / 100   //rad
 
 #define STEPPER_DRIVER_STEP_FACTOR        1.0/2     //Half-stepping
 #define STEPPER_MOTOR_STEP_FACTOR         1.0/200   //Motor 200Steps/rotation

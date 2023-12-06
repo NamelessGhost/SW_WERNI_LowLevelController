@@ -25,7 +25,17 @@ ComHandlerTask::ComHandlerTask(TaskId id, const char* name): Task(id, name)
   conf.pGpioStepOutput = GPIOC;
   conf.GpioPinStepOutput = GPIO_PIN_0;
   mpStepper = new Stepper(conf);
-  mpStepper->StartRotation(2*_2PI);
+  mpStepper->StartRotation(3*_2PI);
+  mpStepper = new Stepper(conf);
+  mpStepper->StartRotation(3*_2PI);
+  mpStepper = new Stepper(conf);
+  //mpStepper->StartRotation(3*_2PI);
+
+  conf.pGpioStepOutput = GPIOC;
+  conf.GpioPinStepOutput = GPIO_PIN_1;
+  mpStepper = new Stepper(conf);
+
+  mpStepper->StartRotation(3*_2PI);
 
 }
 

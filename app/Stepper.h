@@ -12,6 +12,7 @@
 
 #include "tim.h"
 #include "stm32g4xx_hal.h"
+#include "Mutex.h"
 
 enum StepperState {
     OFF,
@@ -54,25 +55,28 @@ class Stepper : public Iinterruptable
 public:
   //**** Function prototypes ****
   Stepper(StepperConfig_t config);
-  static StepperConfig_t GetDefaultConfiguration();
-  StepperConfig_t GetConfiguration();
+  static StepperConfig_t GetDefaultConfiguration(void);
+  StepperConfig_t GetConfiguration(void);
   void SetConfiguration(StepperConfig_t config);
   void StartRotation(float angle);    //Postitve -> CW  Negative -> CCW
-  void StopRotation();
+  void StopRotation(void);
   void OutputCompareIntCb(TIM_HandleTypeDef* htim) override;
 
 protected:
 
 private:
   //**** Function prototypes ****
-  void ReserveTimerChannel();
-  uint32_t CalculateTicksUntilNextStep();
-  bool IsTimeToStartDecelerating();
+  void ReserveTimerChannel(void);
+  void FreeTimerChannel(void);
+  uint32_t CalculateTicksUntilNextStep(void);
+  bool IsTimeToStartDecelerating(void);
 
   //**** Variables ****
-  static uint32_t sUsedTimerChannels;
+  static bool sUsedTimerChannels[];
+  Mutex mMutex;
   TIM_HandleTypeDef* mpTimerHandle;
-  uint32_t mTimerChannel;
+  int32_t mTimerChannel;
+  HAL_TIM_ActiveChannel mTimerActiveChannel;
   GPIO_TypeDef* mpGpioStepOutput;
   uint16_t mGpioPinStepOutput;
 
