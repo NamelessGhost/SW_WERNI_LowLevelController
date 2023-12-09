@@ -7,23 +7,26 @@
 
 #include <string.h>
 #include <stdio.h>
+#
 #include "ComHandlerTask.h"
 #include "main.h"
-#include "paradef.h"
 #include "InterruptRouting.h"
 
 ComHandlerTask* ComHandlerTask::mspThis = 0;
 
-ComHandlerTask::ComHandlerTask(TaskId id, const char* name)
-:Task(id, name)
+ComHandlerTask::ComHandlerTask(TaskId id, const char* name):
+ Task(id, name),
+ mRxBuffer(COMHANDLER_UART_RXBUF_SIZE)
 {
   mpIsrEventMsg = Message::reserveIsr(MSG_ID_TEMPLATETASK_EVENT, ComHandlerTaskId, 0);
+
+
   mpUpdateTimer = new Timer(ComHandlerTaskId, TimerComHandlerUpdate);
   mpUpdateTimer->setInterval(10);
   mpUpdateTimer->setSingleShot(false);
   mpUpdateTimer->start();
 
-  mpHuart = &hlpuart1;
+  mpHuart = &huart1;
 }
 
 ComHandlerTask* ComHandlerTask::instance(void)
@@ -51,7 +54,14 @@ void ComHandlerTask::handleMessage(Message* message)
         case TimerComHandlerUpdate:
           //HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
           TransmitPendingData();
-
+          mTxData.push('H');
+          mTxData.push('$');
+          mTxData.push('C');
+          mTxData.push('2');
+          mTxData.push('F');
+          mTxData.push('F');
+          mTxData.push('E');
+          //ProcessReceivedData();
           break;
 
         default:
@@ -66,12 +76,46 @@ void ComHandlerTask::handleMessage(Message* message)
 
 void ComHandlerTask::ProcessReceivedData(void)
 {
+  message_t lReceivedMessage;
+  if(mRxBuffer.BytesAvailable() >= (sizeof(message_header_t) + 3))
+  {
+    FindPreamble();
+  }
+
+  if(mPreambleDetected)
+  {
+    lReceivedMessage.header.cmd = mRxBuffer.ReadByte();
+    lReceivedMessage.header.len = mRxBuffer.ReadByte();
+    lReceivedMessage.header.checksum = mRxBuffer.ReadByte();
+
+    if(CalculateChecksum() == lReceivedMessage.header.checksum)
+    {
+      //lReceivedMessage.pData = pvPortMalloc(lReceivedMessage.header.len);
+
+    }
+    else
+    {
+      mPreambleDetected = false;
+    }
+  }
+}
+
+uint8_t ComHandlerTask::CalculateChecksum(void)
+{
 
 }
 
-void ComHandlerTask::SearchPreamble(void)
+//Returns true if a preamble was found, preamble is removed in the process
+void ComHandlerTask::FindPreamble(void)
 {
-
+  while(mRxBuffer.IsEmpty() == false)
+  {
+    if(mRxBuffer.ReadByte() == COMHANDLER_UART_PREAMBLE)
+    {
+      mPreambleDetected = true;
+      return;
+    }
+  };
 }
 
 void ComHandlerTask::TransmitPendingData(void)
@@ -80,21 +124,29 @@ void ComHandlerTask::TransmitPendingData(void)
 
   while(mTxData.size() > 0)   //Check if data in transmit buffer
   {
-    txBuf = mTxData.pop();
+    txBuf = mTxData.front();
+    mTxData.pop();
     if(__HAL_UART_GET_FLAG(mpHuart,UART_FLAG_TXFNF) == true)
     {
-      HAL_UART_Transmit_IT(mpHuart, &txBuf, 1U);
+      HAL_UART_Transmit(mpHuart, &txBuf, 1U, 0U);
     }
   }
 }
 
-void ComHandlerTask::UartTxCompleteCb(UART_HandleTypeDef* huart)
+void ComHandlerTask::UartRxFifoGetData(void)
 {
-  uint8_t rxBuf;
-
   while(__HAL_UART_GET_FLAG(mpHuart,UART_FLAG_RXFNE) == true)   //Check if data in receive fifo
   {
-    HAL_UART_Receive_IT(mpHuart, &rxBuf, 1U);
-    mRxData.push(rxBuf);
+    mRxBuffer.WriteByte(mpHuart->Instance->RDR);       //Read data from receive register
   }
+}
+
+void ComHandlerTask::UartRxDataAvailableCb(UART_HandleTypeDef* huart)
+{
+  UartRxFifoGetData();
+}
+
+void ComHandlerTask::UartRxCompleteCb(UART_HandleTypeDef* huart)
+{
+  HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_0);
 }

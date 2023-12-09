@@ -46,7 +46,7 @@
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
-
+extern void UART_RxRtoCallback(UART_HandleTypeDef* huart);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -56,6 +56,7 @@
 
 /* External variables --------------------------------------------------------*/
 extern TIM_HandleTypeDef htim1;
+extern UART_HandleTypeDef huart1;
 extern TIM_HandleTypeDef htim6;
 
 /* USER CODE BEGIN EV */
@@ -186,6 +187,36 @@ void TIM1_CC_IRQHandler(void)
   /* USER CODE BEGIN TIM1_CC_IRQn 1 */
 
   /* USER CODE END TIM1_CC_IRQn 1 */
+}
+
+/**
+  * @brief This function handles USART1 global interrupt / USART1 wake-up interrupt through EXTI line 25.
+  */
+void USART1_IRQHandler(void)
+{
+  /* USER CODE BEGIN USART1_IRQn 0 */
+  uint32_t isrflags = READ_REG(huart1.Instance->ISR);
+
+  /* USER CODE END USART1_IRQn 0 */
+  HAL_UART_IRQHandler(&huart1);
+  /* USER CODE BEGIN USART1_IRQn 1 */
+
+  __HAL_UART_CLEAR_FLAG(&huart1, USART_CR3_TXFTIE);
+
+  //Call the RxDataAvailable function when the receive FIFO reaches its threshold
+  if(isrflags & USART_ISR_RXFT)
+  {
+    __HAL_UART_CLEAR_FLAG(&huart1, USART_ISR_RXFT);
+    HAL_UART_RxCpltCallback(&huart1);
+  }
+
+  //Call the RxComplete function when the receive timeout is reached
+  if(isrflags & USART_ISR_RTOF)
+  {
+    __HAL_UART_CLEAR_FLAG(&huart1, USART_ISR_RTOF);
+    UART_RxRtoCallback(&huart1);
+  }
+  /* USER CODE END USART1_IRQn 1 */
 }
 
 /**

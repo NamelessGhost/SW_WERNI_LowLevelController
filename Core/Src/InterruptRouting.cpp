@@ -29,11 +29,15 @@ void Iinterruptable::UartTxCompleteCb(UART_HandleTypeDef* huart)
   //Implement in derived class to use.
 }
 
-void Iinterruptable::UartRxCompleteCb(UART_HandleTypeDef* huart)
+void Iinterruptable::UartRxDataAvailableCb(UART_HandleTypeDef* huart)
 {
   //Implement in derived class to use.
 }
 
+void Iinterruptable::UartRxCompleteCb(UART_HandleTypeDef* huart)
+{
+  //Implement in derived class to use.
+}
 
 //************ C-Functions below ***************
 
@@ -54,6 +58,14 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef* huart)
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef* huart)
+{
+  for(Iinterruptable* receiver : Iinterruptable::outputCompareIntReceivers)
+  {
+    receiver->UartRxDataAvailableCb(huart);
+  }
+}
+
+void UART_RxRtoCallback(UART_HandleTypeDef* huart)
 {
   for(Iinterruptable* receiver : Iinterruptable::outputCompareIntReceivers)
   {

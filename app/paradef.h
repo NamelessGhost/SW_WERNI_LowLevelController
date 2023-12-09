@@ -23,6 +23,9 @@
 #define STEPPER_DRIVER_STEP_FACTOR        1.0/2     //Half-stepping
 #define STEPPER_MOTOR_STEP_FACTOR         1.0/200   //Motor 200Steps/rotation
 
+#define COMHANDLER_UART_RXBUF_SIZE        256       //Rx Buffer size in bytes
+#define COMHANDLER_UART_PREAMBLE          '$'
+
 #define PI  3.14159f    //float
 #define _2PI 6.28318f   //float
 

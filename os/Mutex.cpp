@@ -19,12 +19,18 @@ Mutex::~Mutex()
 
 void Mutex::lock(uint8_t causedLockId)
 {
-  xSemaphoreTake(mMutex, portMAX_DELAY);
-  mCausedLockId = causedLockId;
+  if(xPortIsInsideInterrupt() == pdFALSE)
+  {
+    xSemaphoreTake(mMutex, portMAX_DELAY);
+    mCausedLockId = causedLockId;
+  }
 }
 
 void Mutex::unlock()
 {
-  xSemaphoreGive(mMutex);
-  mCausedLockId = 0;
+  if(xPortIsInsideInterrupt() == pdFALSE)
+  {
+    xSemaphoreGive(mMutex);
+    mCausedLockId = 0;
+  }
 }
