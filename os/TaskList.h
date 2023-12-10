@@ -24,6 +24,7 @@ enum TaskId
   NoTask,
   TemplateTaskId,
   ComHandlerTaskId,
+  WerniTaskId,
 //  LopTaskId
 };
 

@@ -92,6 +92,10 @@ unsigned int RingBuffer::BytesAvailable(void)
     // Wrap-around occurred, calculate separately
     lRet = mSize - (mReadIndex - mWriteIndex);
   }
+
+  if(mFull)
+    lRet = mSize;
+
   return lRet;
 }
 

@@ -17,6 +17,7 @@
 #define MSG_ID_START                1
 #define MSG_ID_TIMEOUT              2
 #define MSG_ID_TEMPLATETASK_EVENT   3
+#define MSG_ID_WERNI_MESSAGE        4
 
 enum MsgType
 {

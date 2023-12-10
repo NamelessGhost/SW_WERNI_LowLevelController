@@ -7,7 +7,7 @@
 
 #include <string.h>
 #include <stdio.h>
-#
+
 #include "ComHandlerTask.h"
 #include "main.h"
 #include "InterruptRouting.h"
@@ -27,7 +27,7 @@ ComHandlerTask::ComHandlerTask(TaskId id, const char* name):
   mpUpdateTimer->setSingleShot(false);
   mpUpdateTimer->start();
 
-  mpHuart = &huart1;
+  mpHuart = &hlpuart1;
 }
 
 ComHandlerTask* ComHandlerTask::instance(void)
@@ -55,29 +55,6 @@ void ComHandlerTask::handleMessage(Message* message)
         case TimerComHandlerUpdate:
           //HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
           TransmitPendingData();
-          mTxBuffer.WriteByte('A');
-          mTxBuffer.WriteByte('A');
-          mTxBuffer.WriteByte('A');
-          mTxBuffer.WriteByte('B');
-          mTxBuffer.WriteByte(1);
-          mTxBuffer.WriteByte(2);
-          mTxBuffer.WriteByte(0xCA);
-          mTxBuffer.WriteByte(0xFE);
-          mTxBuffer.WriteByte(0);
-          mTxBuffer.WriteByte(0);
-          mTxBuffer.WriteByte(0);
-          mTxBuffer.WriteByte(0);
-          mTxBuffer.WriteByte(0);
-          mTxBuffer.WriteByte(0);
-          mTxBuffer.WriteByte(0);
-          mTxBuffer.WriteByte(0);
-          mTxBuffer.WriteByte(0);
-          mTxBuffer.WriteByte(0);
-          mTxBuffer.WriteByte(0);
-          mTxBuffer.WriteByte(0);
-          mTxBuffer.WriteByte(0);
-          mTxBuffer.WriteByte(0);
-          mTxBuffer.WriteByte(12);
           ProcessReceivedData();
           break;
 
@@ -102,7 +79,11 @@ void ComHandlerTask::ProcessReceivedData(void)
     uint8_t lChecksum = CalculateChecksum(&lReceivedMessage, sizeof(lReceivedMessage) - sizeof(lReceivedMessage.checksum));
     if(lChecksum == lReceivedMessage.checksum)
     {
-     DeliverMessage(lReceivedMessage);
+      //Create memory message and send to Werni Task
+      Message* lpMsg = new Message();
+      lpMsg->reserve(MSG_ID_WERNI_MESSAGE, WerniTaskId, sizeof(lReceivedMessage));
+      memcpy(lpMsg->mem(), &lReceivedMessage, sizeof(lReceivedMessage));
+      lpMsg->sendMsg();
     }
   }
 }
@@ -123,12 +104,6 @@ uint8_t ComHandlerTask::CalculateChecksum(const void* pData, size_t size)
   //TODO:Implement proper checksum
   return 12;
 }
-
-void ComHandlerTask::DeliverMessage(message_t message)
-{
-  //TODO:Deliver message to the recipient
-}
-
 
 void ComHandlerTask::TransmitPendingData(void)
 {

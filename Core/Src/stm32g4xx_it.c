@@ -55,8 +55,9 @@ extern void UART_RxRtoCallback(UART_HandleTypeDef* huart);
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
-extern TIM_HandleTypeDef htim1;
+extern UART_HandleTypeDef hlpuart1;
 extern UART_HandleTypeDef huart1;
+extern TIM_HandleTypeDef htim1;
 extern TIM_HandleTypeDef htim6;
 
 /* USER CODE BEGIN EV */
@@ -245,6 +246,26 @@ void TIM6_DAC_IRQHandler(void)
   /* USER CODE BEGIN TIM6_DAC_IRQn 1 */
 
   /* USER CODE END TIM6_DAC_IRQn 1 */
+}
+
+/**
+  * @brief This function handles LPUART1 global interrupt.
+  */
+void LPUART1_IRQHandler(void)
+{
+  /* USER CODE BEGIN LPUART1_IRQn 0 */
+  uint32_t isrflags = READ_REG(hlpuart1.Instance->ISR);
+  /* USER CODE END LPUART1_IRQn 0 */
+  HAL_UART_IRQHandler(&hlpuart1);
+  /* USER CODE BEGIN LPUART1_IRQn 1 */
+
+  //Call the RxDataAvailable function when the receive FIFO reaches its threshold
+  if(isrflags & USART_ISR_RXFT)
+  {
+    __HAL_UART_CLEAR_FLAG(&hlpuart1, USART_ISR_RXFT);
+    HAL_UART_RxCpltCallback(&hlpuart1);
+  }
+  /* USER CODE END LPUART1_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */
