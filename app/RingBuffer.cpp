@@ -64,6 +64,21 @@ unsigned char RingBuffer::ReadByte()
   return lRet;
 }
 
+bool RingBuffer::ReadBytes(size_t size, const void* pData)
+{
+  if(size > mSize)
+    return false;
+
+  if(pData == nullptr)
+    return false;
+
+  for(unsigned int i = 0; i < size; i++)
+  {
+    *((unsigned char*)pData + i) = ReadByte();
+  }
+  return true;
+}
+
 unsigned int RingBuffer::BytesAvailable(void)
 {
   unsigned int lRet = 0;

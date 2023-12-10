@@ -17,6 +17,7 @@ public:
   virtual ~RingBuffer();
   void WriteByte(unsigned char data);
   unsigned char ReadByte();
+  bool ReadBytes(size_t size, const void* pData);
   unsigned int BytesAvailable(void);
   unsigned int Size();
   bool IsEmpty();

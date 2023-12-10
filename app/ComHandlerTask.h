@@ -19,15 +19,10 @@
 #pragma pack(1) // Set alignment to 1 byte
 
 typedef struct{
-uint8_t cmd;
-uint8_t len;
-uint8_t checksum;
-}message_header_t;
-
-typedef struct{
-  message_header_t header;
-  uint8_t* pData;
-  uint16_t checksum;
+  uint8_t cmd;
+  uint8_t len;
+  uint8_t data[16];
+  uint8_t checksum;
 }message_t;
 
 #pragma pack() // Reset alignment to default
@@ -42,12 +37,13 @@ protected:
   virtual void handleMessage(Message* message);
 
 private:
-  uint8_t CalculateChecksum(void);
+  bool FindPreamble(void);
+  uint8_t CalculateChecksum(const void* pData, size_t size);
+  void DeliverMessage(message_t message);
   void TransmitPendingData(void);
   void UartRxDataAvailableCb(UART_HandleTypeDef* huart);
   void UartRxCompleteCb(UART_HandleTypeDef* huart);
   void ProcessReceivedData(void);
-  void FindPreamble(void);
   void UartRxFifoGetData(void);
 
   static ComHandlerTask* mspThis;
@@ -55,12 +51,8 @@ private:
   Message* mpIsrEventMsg;
   UART_HandleTypeDef* mpHuart;
 
-  std::queue<uint8_t> mTxData;
+  RingBuffer mTxBuffer;
   RingBuffer mRxBuffer;
-
-  bool mPreambleDetected;
-
-
 };
 
 #endif /* COMHANDLERTASK_H_ */

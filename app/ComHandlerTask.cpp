@@ -16,7 +16,8 @@ ComHandlerTask* ComHandlerTask::mspThis = 0;
 
 ComHandlerTask::ComHandlerTask(TaskId id, const char* name):
  Task(id, name),
- mRxBuffer(COMHANDLER_UART_RXBUF_SIZE)
+ mRxBuffer(COMHANDLER_UART_RXBUF_SIZE),
+ mTxBuffer(COMHANDLER_UART_TXBUF_SIZE)
 {
   mpIsrEventMsg = Message::reserveIsr(MSG_ID_TEMPLATETASK_EVENT, ComHandlerTaskId, 0);
 
@@ -54,14 +55,30 @@ void ComHandlerTask::handleMessage(Message* message)
         case TimerComHandlerUpdate:
           //HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
           TransmitPendingData();
-          mTxData.push('H');
-          mTxData.push('$');
-          mTxData.push('C');
-          mTxData.push('2');
-          mTxData.push('F');
-          mTxData.push('F');
-          mTxData.push('E');
-          //ProcessReceivedData();
+          mTxBuffer.WriteByte('A');
+          mTxBuffer.WriteByte('A');
+          mTxBuffer.WriteByte('A');
+          mTxBuffer.WriteByte('B');
+          mTxBuffer.WriteByte(1);
+          mTxBuffer.WriteByte(2);
+          mTxBuffer.WriteByte(0xCA);
+          mTxBuffer.WriteByte(0xFE);
+          mTxBuffer.WriteByte(0);
+          mTxBuffer.WriteByte(0);
+          mTxBuffer.WriteByte(0);
+          mTxBuffer.WriteByte(0);
+          mTxBuffer.WriteByte(0);
+          mTxBuffer.WriteByte(0);
+          mTxBuffer.WriteByte(0);
+          mTxBuffer.WriteByte(0);
+          mTxBuffer.WriteByte(0);
+          mTxBuffer.WriteByte(0);
+          mTxBuffer.WriteByte(0);
+          mTxBuffer.WriteByte(0);
+          mTxBuffer.WriteByte(0);
+          mTxBuffer.WriteByte(0);
+          mTxBuffer.WriteByte(12);
+          ProcessReceivedData();
           break;
 
         default:
@@ -77,59 +94,50 @@ void ComHandlerTask::handleMessage(Message* message)
 void ComHandlerTask::ProcessReceivedData(void)
 {
   message_t lReceivedMessage;
-  if(mRxBuffer.BytesAvailable() >= (sizeof(message_header_t) + 3))
+  if(mRxBuffer.BytesAvailable() >= sizeof(message_t) + COMHANDLER_UART_PREAMBLE_LEN)
+  if(FindPreamble())
   {
-    FindPreamble();
-  }
+    mRxBuffer.ReadBytes(sizeof(lReceivedMessage), (void*)&lReceivedMessage);
 
-  if(mPreambleDetected)
-  {
-    lReceivedMessage.header.cmd = mRxBuffer.ReadByte();
-    lReceivedMessage.header.len = mRxBuffer.ReadByte();
-    lReceivedMessage.header.checksum = mRxBuffer.ReadByte();
-
-    if(CalculateChecksum() == lReceivedMessage.header.checksum)
+    uint8_t lChecksum = CalculateChecksum(&lReceivedMessage, sizeof(lReceivedMessage) - sizeof(lReceivedMessage.checksum));
+    if(lChecksum == lReceivedMessage.checksum)
     {
-      //lReceivedMessage.pData = pvPortMalloc(lReceivedMessage.header.len);
-
-    }
-    else
-    {
-      mPreambleDetected = false;
+     DeliverMessage(lReceivedMessage);
     }
   }
-}
-
-uint8_t ComHandlerTask::CalculateChecksum(void)
-{
-
 }
 
 //Returns true if a preamble was found, preamble is removed in the process
-void ComHandlerTask::FindPreamble(void)
+bool ComHandlerTask::FindPreamble(void)
 {
-  while(mRxBuffer.IsEmpty() == false)
-  {
-    if(mRxBuffer.ReadByte() == COMHANDLER_UART_PREAMBLE)
-    {
-      mPreambleDetected = true;
-      return;
-    }
-  };
+  char lPreamble[COMHANDLER_UART_PREAMBLE_LEN + 1] = {0};
+  mRxBuffer.ReadBytes(COMHANDLER_UART_PREAMBLE_LEN, (void*)&lPreamble);
+  if(strcmp(COMHANDLER_UART_PREAMBLE, lPreamble) == 0)
+    return true;
+
+  return false;
 }
+
+uint8_t ComHandlerTask::CalculateChecksum(const void* pData, size_t size)
+{
+  //TODO:Implement proper checksum
+  return 12;
+}
+
+void ComHandlerTask::DeliverMessage(message_t message)
+{
+  //TODO:Deliver message to the recipient
+}
+
 
 void ComHandlerTask::TransmitPendingData(void)
 {
   uint8_t txBuf;
 
-  while(mTxData.size() > 0)   //Check if data in transmit buffer
+  while((__HAL_UART_GET_FLAG(mpHuart,UART_FLAG_TXFNF) == true) && (mTxBuffer.BytesAvailable() > 0))
   {
-    txBuf = mTxData.front();
-    mTxData.pop();
-    if(__HAL_UART_GET_FLAG(mpHuart,UART_FLAG_TXFNF) == true)
-    {
-      HAL_UART_Transmit(mpHuart, &txBuf, 1U, 0U);
-    }
+    txBuf = mTxBuffer.ReadByte();
+    HAL_UART_Transmit(mpHuart, &txBuf, 1U, 0U);
   }
 }
 
