@@ -10,15 +10,15 @@
 #include "main.h"
 #include "paradef.h"
 #include "cmath"
+#include "FreeRTOS.h"
 
-uint32_t Stepper::sUsedTimerChannels = 0;
+bool Stepper::sUsedTimerChannels[STEPPER_TIMER_MAX_CHANNELS] = {0};
 
 Stepper::Stepper(StepperConfig_t config) : Iinterruptable()
 {
   SetConfiguration(config);  //Apply the configuration
 
   mpTimerHandle = STEPPER_STEP_TIMER_HANDLE;
-  ReserveTimerChannel();
 
   mStepperState = OFF;
   mRotationState = STANDSTILL;
@@ -53,17 +53,36 @@ StepperConfig_t Stepper::GetDefaultConfiguration()
   return lDefaultConfig;
 }
 
-void Stepper::ReserveTimerChannel()
+void Stepper::ReserveTimerChannel(void)
 {
-  //Make sure a channel is available
-  if(sUsedTimerChannels < STEPPER_TIMER_MAX_CHANNELS)
+  mMutex.lock();
+
+  mTimerChannel = -1;
+
+  //Find a channel that is currently not in use
+  for(uint32_t i = 0; i < STEPPER_TIMER_MAX_CHANNELS; i++)
   {
-    sUsedTimerChannels++;
-    mTimerChannel = sUsedTimerChannels * 4;
+    if(sUsedTimerChannels[i] == false)
+    {
+      mTimerChannel = i * 4;    //User to manipulate timer
+      mTimerActiveChannel = static_cast<HAL_TIM_ActiveChannel>(1<<i);   //Used for interrupt handling
+
+      sUsedTimerChannels[i] = true;
+      break;
+    }
   }
+
+  mMutex.unlock();
+
+  assert_param(mTimerChannel != -1);   //Stop here if no channel is free
 }
 
-StepperConfig_t Stepper::GetConfiguration()
+void Stepper::FreeTimerChannel(void)
+{
+  sUsedTimerChannels[ mTimerChannel/4 ] = 0;  //Todo:Beautyfy
+}
+
+StepperConfig_t Stepper::GetConfiguration(void)
 {
   StepperConfig_t lConfig;
 
@@ -106,6 +125,8 @@ void Stepper::SetConfiguration(StepperConfig_t config)
 
 void Stepper::StartRotation(float angle)
 {
+  ReserveTimerChannel();
+
   if(mStepperState != ROTATING)
   {
     mStepperState = ROTATING;
@@ -136,6 +157,8 @@ void Stepper::StopRotation()
   mRotationState = STANDSTILL;
 
   HAL_TIM_OC_Stop_IT(mpTimerHandle, mTimerChannel);
+
+  FreeTimerChannel();
 }
 
 bool Stepper::IsTimeToStartDecelerating()
@@ -217,17 +240,20 @@ uint32_t Stepper::CalculateTicksUntilNextStep()
 
 void Stepper::OutputCompareIntCb(TIM_HandleTypeDef* htim)
 {
-  uint32_t lPreviousCompareValue = __HAL_TIM_GET_COMPARE(mpTimerHandle, mTimerChannel);
+  if(htim->Channel == mTimerActiveChannel){       //If the corresponding timer channel creates an interrupt
 
-  if(mStepOutputState == OUTPUT_LOW){
-    mStepOutputState = OUTPUT_HIGH;
-    mStepsRotated += 1;
+    uint32_t lPreviousCompareValue = __HAL_TIM_GET_COMPARE(mpTimerHandle, mTimerChannel);
+
+    if(mStepOutputState == OUTPUT_LOW){
+      mStepOutputState = OUTPUT_HIGH;
+      mStepsRotated += 1;
+    }
+    else mStepOutputState = OUTPUT_LOW;
+
+    HAL_GPIO_WritePin(mpGpioStepOutput, mGpioPinStepOutput, (GPIO_PinState)mStepOutputState);
+
+    uint32_t ticks = CalculateTicksUntilNextStep()/2;
+
+    __HAL_TIM_SET_COMPARE(mpTimerHandle, mTimerChannel, lPreviousCompareValue + ticks);   // Divide by to to get half period step output low and half period step output high
   }
-  else mStepOutputState = OUTPUT_LOW;
-
-  HAL_GPIO_WritePin(mpGpioStepOutput, mGpioPinStepOutput, (GPIO_PinState)mStepOutputState);
-
-  uint32_t ticks = CalculateTicksUntilNextStep()/2;
-
-  __HAL_TIM_SET_COMPARE(mpTimerHandle, mTimerChannel, lPreviousCompareValue + ticks);   // Divide by to to get half period step output low and half period step output high
 }
