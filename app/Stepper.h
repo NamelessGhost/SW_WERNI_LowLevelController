@@ -9,15 +9,18 @@
 
 #include <vector>
 #include "InterruptRouting.h"
-
+#include "paradef.h"
 #include "tim.h"
 #include "stm32g4xx_hal.h"
 #include "Mutex.h"
 
+#define FULL_ROTATION_RAD   _2PI
+#define HALF_ROTATION_RAD   PI
+
 enum StepperState {
-    OFF,
-    HOLDING,
-    ROTATING
+  OFF,
+  HOLDING,
+  ROTATING
 };
 
 enum RotationState {
@@ -59,7 +62,9 @@ public:
   StepperConfig_t GetConfiguration(void);
   void SetConfiguration(StepperConfig_t config);
   void StartRotation(float angle);    //Postitve -> CW  Negative -> CCW
+  void StartRotationBlocking(float angle);  //Postitve -> CW  Negative -> CCW
   void StopRotation(void);
+  StepperState GetState(void);
   void OutputCompareIntCb(TIM_HandleTypeDef* htim) override;
 
 protected:

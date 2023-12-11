@@ -28,8 +28,15 @@
 #define COMHANDLER_UART_PREAMBLE          "AAAB"
 #define COMHANDLER_UART_PREAMBLE_LEN      4
 
+#define CUBEGRID_HOMING_ANGULAR_VELOCITY  1 * PI    //rad/s
+#define CUBEGRID_TARGET_ANGULAR_VELOCITY  2 * PI    //rad/S
+#define CUBEGRID_GEAR_FACTOR              3
+
+#define MAGAZINESLOT_ANGLE_PER_CUBE       300       //degrees
+
 #define PI  3.14159f    //float
 #define _2PI 6.28318f   //float
+#define DEG_TO_RAD(degrees) ((degrees) * PI / 180.0)
 
 
 #endif /* PARADEF_H_ */

@@ -9,6 +9,7 @@
 #include "app_init.h"
 #include "TemplateTask.h"
 #include "ComHandlerTask.h"
+#include "WerniTask.h"
 
 int app_init_done = 0;
 
@@ -17,6 +18,7 @@ void app_init()
   /////////////////    create tasks
 
   ComHandlerTask::instance();
+  WerniTask::instance();
 
   //Periodic CAN timer task
 //  CanTask::instance();

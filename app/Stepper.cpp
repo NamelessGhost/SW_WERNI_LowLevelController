@@ -8,7 +8,6 @@
 #include <stdio.h>
 #include "Stepper.h"
 #include "main.h"
-#include "paradef.h"
 #include "cmath"
 #include "FreeRTOS.h"
 
@@ -123,6 +122,15 @@ void Stepper::SetConfiguration(StepperConfig_t config)
   assert_param(mpGpioStepOutput != NULL);
 }
 
+void Stepper::StartRotationBlocking(float angle)
+{
+  StartRotation(angle);
+  while(mStepperState == ROTATING)
+  {
+    vTaskDelay(pdMS_TO_TICKS(10));
+  }
+}
+
 void Stepper::StartRotation(float angle)
 {
   ReserveTimerChannel();
@@ -159,6 +167,11 @@ void Stepper::StopRotation()
   HAL_TIM_OC_Stop_IT(mpTimerHandle, mTimerChannel);
 
   FreeTimerChannel();
+}
+
+StepperState Stepper::GetState(void)
+{
+  return mStepperState;
 }
 
 bool Stepper::IsTimeToStartDecelerating()
