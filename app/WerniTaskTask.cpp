@@ -55,12 +55,15 @@ void WerniTask::handleWerniMessage(Message* message)
 
   switch (lpMessage->checksum) {
     case CMD_ROTATE_GRID:
+    {
       int16_t lAngle = lpMessage->dataUnion.cmdRotateGrid.degrees_h << 8;
       lAngle |= lpMessage->dataUnion.cmdRotateGrid.degrees_l;
       mCubeGrid.Rotate(lAngle);
+    }
       break;
 
     case CMD_PLACE_CUBES:
+    {
       mMagazineSlotRed.StartDispensingCubes(lpMessage->dataUnion.cmdPlaceCubes.cubes_red);
       mMagazineSlotYellow.StartDispensingCubes(lpMessage->dataUnion.cmdPlaceCubes.cubes_yellow);
       mMagazineSlotBlue.StartDispensingCubes(lpMessage->dataUnion.cmdPlaceCubes.cubes_blue);
@@ -72,6 +75,7 @@ void WerniTask::handleWerniMessage(Message* message)
       {
         vTaskDelay(pdMS_TO_TICKS(10));
       }
+    }
       break;
 
     case CMD_STATE:
