@@ -196,19 +196,22 @@ void TIM1_CC_IRQHandler(void)
 void USART1_IRQHandler(void)
 {
   /* USER CODE BEGIN USART1_IRQn 0 */
-  uint32_t isrflags = READ_REG(huart1.Instance->ISR);
 
+  if(0)//Prevent execution of IRQ Handler
+  {
   /* USER CODE END USART1_IRQn 0 */
   HAL_UART_IRQHandler(&huart1);
   /* USER CODE BEGIN USART1_IRQn 1 */
+  }
 
-  __HAL_UART_CLEAR_FLAG(&huart1, USART_CR3_TXFTIE);
+
+  uint32_t isrflags = READ_REG(huart1.Instance->ISR);
 
   //Call the RxDataAvailable function when the receive FIFO reaches its threshold
   if(isrflags & USART_ISR_RXFT)
   {
     __HAL_UART_CLEAR_FLAG(&huart1, USART_ISR_RXFT);
-    HAL_UART_RxCpltCallback(&huart1);
+    UART_RxFtCallback(&huart1);
   }
 
   //Call the RxComplete function when the receive timeout is reached
@@ -254,16 +257,22 @@ void TIM6_DAC_IRQHandler(void)
 void LPUART1_IRQHandler(void)
 {
   /* USER CODE BEGIN LPUART1_IRQn 0 */
-  uint32_t isrflags = READ_REG(hlpuart1.Instance->ISR);
+
+  if(0)//Prevent execution of IRQ Handler
+  {
   /* USER CODE END LPUART1_IRQn 0 */
   HAL_UART_IRQHandler(&hlpuart1);
   /* USER CODE BEGIN LPUART1_IRQn 1 */
+  }
+
+
+  uint32_t isrflags = READ_REG(hlpuart1.Instance->ISR);
 
   //Call the RxDataAvailable function when the receive FIFO reaches its threshold
   if(isrflags & USART_ISR_RXFT)
   {
     __HAL_UART_CLEAR_FLAG(&hlpuart1, USART_ISR_RXFT);
-    HAL_UART_RxCpltCallback(&hlpuart1);
+    UART_RxFtCallback(&hlpuart1);
   }
   /* USER CODE END LPUART1_IRQn 1 */
 }

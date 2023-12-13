@@ -31,8 +31,8 @@ private:
   bool FindPreamble(void);
   uint8_t CalculateChecksum(const void* pData, size_t size);
   void TransmitPendingData(void);
-  void UartRxDataAvailableCb(UART_HandleTypeDef* huart);
-  void UartRxCompleteCb(UART_HandleTypeDef* huart);
+  void UartRxDataAvailableCb(UART_HandleTypeDef* huart) override;
+  void UartRxRtoCallback(UART_HandleTypeDef* huart) override;
   void ProcessReceivedData(void);
   void UartRxFifoGetData(void);
 

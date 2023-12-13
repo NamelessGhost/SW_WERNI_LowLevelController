@@ -110,7 +110,10 @@ void MX_USART1_UART_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN USART1_Init 2 */
-__HAL_UART_ENABLE_IT(&huart1, UART_IT_RXFT);    //Rx FIFO threashold reached interrupt
+  HAL_UART_ReceiverTimeout_Config(&huart1, 1000); //Receiver timeout 1000 bit times after last character
+  HAL_UART_EnableReceiverTimeout(&huart1);
+  __HAL_UART_ENABLE_IT(&huart1, UART_IT_RTO);    //Rx FIFO threashold reached interrupt
+  __HAL_UART_ENABLE_IT(&huart1, UART_IT_RXFT);    //Rx FIFO threashold reached interrupt
   /* USER CODE END USART1_Init 2 */
 
 }

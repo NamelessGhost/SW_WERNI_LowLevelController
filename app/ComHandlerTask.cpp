@@ -107,12 +107,9 @@ uint8_t ComHandlerTask::CalculateChecksum(const void* pData, size_t size)
 
 void ComHandlerTask::TransmitPendingData(void)
 {
-  uint8_t txBuf;
-
   while((__HAL_UART_GET_FLAG(mpHuart,UART_FLAG_TXFNF) == true) && (mTxBuffer.BytesAvailable() > 0))
   {
-    txBuf = mTxBuffer.ReadByte();
-    HAL_UART_Transmit(mpHuart, &txBuf, 1U, 0U);
+    mpHuart->Instance->TDR = mTxBuffer.ReadByte();    //Write byte into uart tx fifo
   }
 }
 
@@ -129,7 +126,7 @@ void ComHandlerTask::UartRxDataAvailableCb(UART_HandleTypeDef* huart)
   UartRxFifoGetData();
 }
 
-void ComHandlerTask::UartRxCompleteCb(UART_HandleTypeDef* huart)
+void ComHandlerTask::UartRxRtoCallback(UART_HandleTypeDef* huart)
 {
   HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_0);
 }

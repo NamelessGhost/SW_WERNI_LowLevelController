@@ -22,7 +22,7 @@ public:
   virtual void OutputCompareIntCb(TIM_HandleTypeDef* htim);
   virtual void UartTxCompleteCb(UART_HandleTypeDef* huart);
   virtual void UartRxDataAvailableCb(UART_HandleTypeDef* huart);
-  virtual void UartRxCompleteCb(UART_HandleTypeDef* huart);
+  virtual void UartRxRtoCallback(UART_HandleTypeDef* huart);
 
   static std::vector<Iinterruptable*> outputCompareIntReceivers;
 protected:
@@ -40,7 +40,7 @@ extern "C" {
 
 void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef* htim);
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef* huart);
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef* huart);
+void UART_RxFtCallback(UART_HandleTypeDef* huart);
 void UART_RxRtoCallback(UART_HandleTypeDef* huart);
 
 #ifdef __cplusplus
