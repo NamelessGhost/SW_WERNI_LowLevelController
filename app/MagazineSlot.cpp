@@ -32,5 +32,10 @@ void MagazineSlot::StartDispensingCubes(uint32_t cnt)
 
 bool MagazineSlot::CheckFinished(void)
 {
-  return (mpDriveMotor->GetState() != ROTATING);
+  if(mpDriveMotor->GetState() != ROTATING)
+  {
+    mState = IDLE;
+    return true;
+  }
+  return false;
 }
