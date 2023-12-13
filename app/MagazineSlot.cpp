@@ -10,7 +10,7 @@
 MagazineSlot::MagazineSlot(void)
 {
   mDriveMotorConf = Stepper::GetDefaultConfiguration();
-  mDriveMotorConf.GpioPinStepOutput = GPIO_PIN_0;
+  mDriveMotorConf.GpioPinStepOutput = GPIO_PIN_3;
   mDriveMotorConf.pGpioStepOutput = GPIOC;
   mDriveMotorConf.TargetAngularVelocity = CUBEGRID_TARGET_ANGULAR_VELOCITY * CUBEGRID_GEAR_FACTOR;
   mpDriveMotor = new Stepper(mDriveMotorConf);

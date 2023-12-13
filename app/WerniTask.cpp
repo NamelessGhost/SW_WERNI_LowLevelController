@@ -53,7 +53,7 @@ void WerniTask::handleWerniMessage(Message* message)
 {
   message_t* lpMessage = (message_t*)message->mem()->memory;
 
-  switch (lpMessage->checksum) {
+  switch (lpMessage->cmd) {
     case CMD_ROTATE_GRID:
     {
       int16_t lAngle = lpMessage->dataUnion.cmdRotateGrid.degrees_h << 8;

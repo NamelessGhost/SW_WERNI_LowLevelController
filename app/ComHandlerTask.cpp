@@ -80,8 +80,7 @@ void ComHandlerTask::ProcessReceivedData(void)
     if(lChecksum == lReceivedMessage.checksum)
     {
       //Create memory message and send to Werni Task
-      Message* lpMsg = new Message();
-      lpMsg->reserve(MSG_ID_WERNI_MESSAGE, WerniTaskId, sizeof(lReceivedMessage));
+      Message* lpMsg = Message::reserve(MSG_ID_WERNI_MESSAGE, WerniTaskId, sizeof(lReceivedMessage));
       memcpy(lpMsg->mem()->memory, &lReceivedMessage, sizeof(lReceivedMessage));
       lpMsg->sendMsg();
     }
