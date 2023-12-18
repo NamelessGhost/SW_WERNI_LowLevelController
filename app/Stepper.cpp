@@ -10,7 +10,8 @@
 #include "main.h"
 #include "cmath"
 #include "FreeRTOS.h"
-#include "TMC2208Stepper.h"
+#include "TMC2208.h"
+
 
 bool Stepper::sUsedTimerChannels[STEPPER_TIMER_MAX_CHANNELS] = {0};
 
@@ -29,10 +30,24 @@ Stepper::Stepper(StepperConfig_t config) : Iinterruptable()
   mTargetRotationAngle = 0;
   mStepsRotated = 0;
 
-  TMC2208Stepper* pTMC = new TMC2208Stepper();
-  pTMC->pdn_disable(1);
-  pTMC->en_spreadCycle(1);
-  pTMC->mres(1);
+
+  //TMC2208Stepper* pTMC = new TMC2208Stepper();
+  uint8_t txBuff[4];
+  txBuff[0] = 0b00000101;
+  txBuff[1] = 0x00;
+  txBuff[2] = 0x00;
+  txBuff[3] = 0b01001000;
+  //txBuff[3] = pTMC->calcCRC(txBuff, sizeof(txBuff-1));
+
+  HAL_UART_Transmit(&huart5, txBuff, sizeof(txBuff), 10);
+
+
+  TMC2208* pTMC = new TMC2208();
+  pTMC->WriteConfig();
+
+//  pTMC->pdn_disable(1);
+//  pTMC->en_spreadCycle(1);
+//  pTMC->mres(1);
 }
 
 StepperConfig_t Stepper::GetDefaultConfiguration()
