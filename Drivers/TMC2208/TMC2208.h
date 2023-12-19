@@ -56,7 +56,7 @@ public:
 
 private:
   tmc2208_reg_data_t mGconfSr;   //GCONF shadow register
-  void CalculateAndAppendCRC(uint8_t* pData, uint32_t len);
+  uint8_t CalculateCRC(uint8_t data[], uint8_t len);
   void Byteswap32(uint8_t* ptr);
   void UartWrite(const uint8_t* pData, uint32_t len);
 };

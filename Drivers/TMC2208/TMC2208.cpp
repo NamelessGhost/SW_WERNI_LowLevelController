@@ -38,33 +38,27 @@ void TMC2208::WriteConfig()
   lWriteMsg.regAddress = REG_ADDR_GCONF;
   lWriteMsg.regData = mGconfSr;
   Byteswap32((uint8_t*)&lWriteMsg.regData);
-  CalculateAndAppendCRC((uint8_t*)&lWriteMsg, sizeof(lWriteMsg));
+  *((uint8_t*)&lWriteMsg.regData + 3) = 0b11000000;
+  lWriteMsg.crc = CalculateCRC((uint8_t*)&lWriteMsg, sizeof(lWriteMsg)-1);
   UartWrite((uint8_t*)&lWriteMsg, sizeof(lWriteMsg));
 }
 
-void TMC2208::CalculateAndAppendCRC(uint8_t* pData, uint32_t len)
+uint8_t TMC2208::CalculateCRC(uint8_t data[], uint8_t len)
 {
-  int32_t i,j;
-  uint8_t* crc = pData + (len-1); // CRC located in last byte of message
-  uint8_t currentByte;
-
-  crc = 0;
-  for (i=0; i<(len-1); i++)
-  { // Execute for all bytes of a message
-    currentByte = pData[i]; // Retrieve a byte to be sent from Array
-    for (j=0; j<8; j++)
-    {
-      if ((*crc >> 7) ^ (currentByte&0x01)) // update CRC based result of XOR operation
-      {
-        *crc = (*crc << 1) ^ 0x07;
+  uint8_t crc = 0;
+  for (uint8_t i = 0; i < len; i++) {
+    uint8_t currentByte = data[i];
+    for (uint8_t j = 0; j < 8; j++) {
+      if ((crc >> 7) ^ (currentByte & 0x01)) {
+        crc = (crc << 1) ^ 0x07;
+      } else {
+        crc = (crc << 1);
       }
-      else
-      {
-        *crc = (*crc << 1);
-      }
+      crc &= 0xff;
       currentByte = currentByte >> 1;
-    } // for CRC bit
-  } // for message byte
+    }
+  }
+  return crc;
 }
 
 void TMC2208::Byteswap32(uint8_t* ptr)

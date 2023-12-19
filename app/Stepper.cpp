@@ -31,17 +31,6 @@ Stepper::Stepper(StepperConfig_t config) : Iinterruptable()
   mStepsRotated = 0;
 
 
-  //TMC2208Stepper* pTMC = new TMC2208Stepper();
-  uint8_t txBuff[4];
-  txBuff[0] = 0b00000101;
-  txBuff[1] = 0x00;
-  txBuff[2] = 0x00;
-  txBuff[3] = 0b01001000;
-  //txBuff[3] = pTMC->calcCRC(txBuff, sizeof(txBuff-1));
-
-  HAL_UART_Transmit(&huart5, txBuff, sizeof(txBuff), 10);
-
-
   TMC2208* pTMC = new TMC2208();
   pTMC->WriteConfig();
 
