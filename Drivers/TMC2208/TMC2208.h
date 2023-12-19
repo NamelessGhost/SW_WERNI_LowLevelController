@@ -11,6 +11,7 @@
 #include <stdint.h>
 
 #define REG_ADDR_GCONF      0x00
+#define REG_ADDR_CHOPCONF   0x6C
 
 #pragma pack(1)
 
@@ -31,9 +32,27 @@ typedef union {
   };
 } tmc2208_gconf_reg_t;
 
+typedef union {
+  uint32_t value;
+  struct {
+    uint32_t diss2vs          :1;
+    uint32_t diss2g           :1;
+    uint32_t dedge            :1;
+    uint32_t intpol           :1;
+    uint32_t MRES             :4;
+    uint32_t reserved1        :6;
+    uint32_t vsense           :1;
+    uint32_t TBL              :2;
+    uint32_t reserved2        :4;
+    uint32_t HEND             :4;
+    uint32_t HSTRT            :3;
+    uint32_t TOFF             :4;
+  };
+} tmc2208_chopconf_reg_t;
 
 typedef union {
   tmc2208_gconf_reg_t gconf;
+  tmc2208_chopconf_reg_t chopconf;
 } tmc2208_reg_data_t;
 
 typedef struct {
@@ -45,6 +64,14 @@ typedef struct {
   uint8_t crc       :8;
 } tmc2208_write_msg_t;
 
+typedef struct {
+  uint8_t header    :8;
+  uint8_t address   :8;
+  uint8_t regAddress:7;
+  uint8_t writeBit  :1;
+  uint8_t crc       :8;
+} tmc2208_read_msg_t;
+
 #pragma pack()
 
 class TMC2208
@@ -53,12 +80,21 @@ public:
   TMC2208();
   virtual ~TMC2208();
   void WriteConfig();
+  void ReadConfig();
 
 private:
-  tmc2208_reg_data_t mGconfSr;   //GCONF shadow register
+
+  //Shadow registers
+  tmc2208_reg_data_t mGconfSr;
+  tmc2208_reg_data_t mChopconfSr;
+
+  //Private functions
+  void ReadRegister(uint8_t regAddr, tmc2208_reg_data_t* pRegData);
+  void WriteRegister(uint8_t regAddr, const tmc2208_reg_data_t* pRegData);
   uint8_t CalculateCRC(uint8_t data[], uint8_t len);
   void Byteswap32(uint8_t* ptr);
   void UartWrite(const uint8_t* pData, uint32_t len);
+  void UartRead( uint8_t* pData, uint32_t len);
 };
 
 #endif /* TMC2208_TMC2208_H_ */
