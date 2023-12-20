@@ -18,24 +18,26 @@
 typedef union {
   uint32_t value;
   struct {
-    uint32_t I_scale_analog   :1;
-    uint32_t internal_Rsense  :1;
-    uint32_t en_spreadcycle   :1;
-    uint32_t shaft            :1;
-    uint32_t index_otpw       :1;
-    uint32_t index_step       :1;
-    uint32_t pdn_disable      :1;
-    uint32_t mstep_reg_select :1;
-    uint32_t multistep_filt   :1;
-    uint32_t test_mode        :1;
-    uint32_t reserved         :22;
+    uint8_t I_scale_analog   :1;   //BIT0
+    uint8_t internal_Rsense  :1;
+    uint8_t en_spreadcycle   :1;
+    uint8_t shaft            :1;
+    uint8_t index_otpw       :1;
+    uint8_t index_step       :1;
+    uint8_t pdn_disable      :1;
+    uint8_t mstep_reg_select :1;
+    uint8_t multistep_filt   :1;
+    uint8_t test_mode        :1;
+    uint8_t reserved0        :8;
+    uint8_t reserved1        :8;
+    uint8_t reserved2        :6;    //BIT31
   };
 } tmc2208_gconf_reg_t;
 
 typedef union {
   uint32_t value;
   struct {
-    uint32_t diss2vs          :1;
+    uint32_t diss2vs          :1;   //BIT31
     uint32_t diss2g           :1;
     uint32_t dedge            :1;
     uint32_t intpol           :1;
@@ -46,7 +48,7 @@ typedef union {
     uint32_t reserved2        :4;
     uint32_t HEND             :4;
     uint32_t HSTRT            :3;
-    uint32_t TOFF             :4;
+    uint32_t TOFF             :4;   //BIT0
   };
 } tmc2208_chopconf_reg_t;
 
@@ -92,7 +94,7 @@ private:
   void ReadRegister(uint8_t regAddr, tmc2208_reg_data_t* pRegData);
   void WriteRegister(uint8_t regAddr, const tmc2208_reg_data_t* pRegData);
   uint8_t CalculateCRC(uint8_t data[], uint8_t len);
-  void Byteswap32(uint8_t* ptr);
+  tmc2208_reg_data_t SwapBytes(const tmc2208_reg_data_t* pReg);
   void UartWrite(const uint8_t* pData, uint32_t len);
   void UartRead( uint8_t* pData, uint32_t len);
 };

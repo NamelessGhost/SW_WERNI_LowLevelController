@@ -31,10 +31,12 @@ TMC2208::TMC2208()
   mChopconfSr.chopconf.MRES = 1;  //Halfstepping
   mChopconfSr.chopconf.reserved1 = 0;
   mChopconfSr.chopconf.vsense = 1;   //Check!
+  mChopconfSr.chopconf.TBL = 0;
   mChopconfSr.chopconf.reserved2 = 0;
   mChopconfSr.chopconf.HEND = 0;
   mChopconfSr.chopconf.HSTRT = 0;    //Check!
   mChopconfSr.chopconf.TOFF = 3;
+
 }
 
 TMC2208::~TMC2208()
@@ -64,13 +66,13 @@ void TMC2208::ReadRegister(uint8_t regAddr, tmc2208_reg_data_t* pRegData)
   lReadMsg.writeBit = 0x01;
   lReadMsg.regAddress = regAddr;
 
-  lReadMsg.crc = CalculateCRC((uint8_t*)&lReadMsg, sizeof(lReadMsg)-1);
+  lReadMsg.crc = CalculateCRC((uint8_t*)&lReadMsg, 3);
 
-  UartWrite((uint8_t*)&lReadMsg, sizeof(lReadMsg));             //Send read request to TMC2208
+  UartWrite((uint8_t*)&lReadMsg, 4);             //Send read request to TMC2208
 
-  UartRead((uint8_t*)&lReadResponse, sizeof(lReadResponse));    //Receive response from TMC2208
+  UartRead((uint8_t*)&lReadResponse, 8);    //Receive response from TMC2208
 
-  Byteswap32((uint8_t*)&lReadResponse.regData);
+  //Byteswap32((uint8_t*)&lReadResponse.regData);
 
   memcpy(pRegData, &lReadResponse.regData, sizeof(tmc2208_reg_data_t));
 }
@@ -83,13 +85,13 @@ void TMC2208::WriteRegister(uint8_t regAddr, const tmc2208_reg_data_t* pRegData)
   lWriteMsg.address = 0x00;
   lWriteMsg.writeBit = 0x01;
   lWriteMsg.regAddress = regAddr;
-  lWriteMsg.regData = *pRegData;
+  lWriteMsg.regData = SwapBytes(pRegData);
 
-  Byteswap32((uint8_t*)&lWriteMsg.regData);
+  //Byteswap32((uint8_t*)&lWriteMsg.regData);
 
   lWriteMsg.crc = CalculateCRC((uint8_t*)&lWriteMsg, sizeof(lWriteMsg)-1);
 
-  UartWrite((uint8_t*)&lWriteMsg, sizeof(lWriteMsg));
+  UartWrite((uint8_t*)&lWriteMsg, 8);
 }
 
 uint8_t TMC2208::CalculateCRC(uint8_t data[], uint8_t len)
@@ -110,18 +112,17 @@ uint8_t TMC2208::CalculateCRC(uint8_t data[], uint8_t len)
   return crc;
 }
 
-void TMC2208::Byteswap32(uint8_t* ptr)
+//Swap the bytes in the data register so that byte 3 lies first in memory
+tmc2208_reg_data_t TMC2208::SwapBytes(const tmc2208_reg_data_t* pReg)
 {
-  uint8_t buf[4];
-  buf[3] = *(ptr + 0);
-  buf[2] = *(ptr + 1);
-  buf[1] = *(ptr + 2);
-  buf[0] = *(ptr + 3);
+  uint8_t buff[4];
+  buff[0] = *((uint8_t*)pReg + 3);
+  buff[1] = *((uint8_t*)pReg + 2);
+  buff[2] = *((uint8_t*)pReg + 1);
+  buff[3] = *((uint8_t*)pReg + 0);
 
-  *(ptr + 0) = buf[0];
-  *(ptr + 1) = buf[1];
-  *(ptr + 2) = buf[2];
-  *(ptr + 3) = buf[3];
+  return *((tmc2208_reg_data_t*)buff);
+
 }
 
 void TMC2208::UartWrite(const uint8_t* pData, uint32_t len)
