@@ -88,9 +88,11 @@ private:
   //**** Function prototypes ****
   void ReserveTimerChannel(void);
   void FreeTimerChannel(void);
-  uint32_t CalculateTicksUntilNextStep(void);
   bool IsTimeToStartDecelerating(void);
+  uint32_t CalculateTicksUntilNextStep(void);
 
+  void SetDirection(bool cw);  //true= CW, false= CCW
+  void SetDriverStepFactor(float stepFactor);
   //**** Variables ****
   static bool sUsedTimerChannels[];
   Mutex mMutex;

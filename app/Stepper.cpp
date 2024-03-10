@@ -160,6 +160,8 @@ void Stepper::SetConfiguration(StepperConfig_t config)
 
   mDriveTrainFactor = mDriverStepFactor * mMotorStepFactor;
   assert_param(mpGpioStepOutput != NULL);
+
+  SetDriverStepFactor(mDriverStepFactor);
 }
 
 void Stepper::StartRotationBlocking(float angle)
@@ -173,6 +175,7 @@ void Stepper::StartRotationBlocking(float angle)
 
 void Stepper::StartRotation(float angle)
 {
+  SetDirection(angle > 0);
   ReserveTimerChannel();
 
   if(mStepperState != ROTATING)
@@ -296,6 +299,43 @@ uint32_t Stepper::CalculateTicksUntilNextStep()
   }
 
   return lRet;
+}
+
+void Stepper::SetDirection(bool cw)
+{
+  GPIO_PinState lState = cw ? GPIO_PIN_SET : GPIO_PIN_RESET;
+  HAL_GPIO_WritePin(mpGpioDirectionOutput, mGpioPinDirectionOutput, lState);
+}
+
+void Stepper::SetDriverStepFactor(float stepFactor)
+{
+  uint32_t lStepFactor = 1/stepFactor;    //Half-Stepping -> = 2
+  switch(lStepFactor)
+  {
+    case 2:
+      HAL_GPIO_WritePin(mpGpioMS1Output, mGpioPinMS1Output, GPIO_PIN_SET);
+      HAL_GPIO_WritePin(mpGpioMS2Output, mGpioPinMS2Output, GPIO_PIN_RESET);
+      break;
+
+    case 4:
+      HAL_GPIO_WritePin(mpGpioMS1Output, mGpioPinMS1Output, GPIO_PIN_RESET);
+      HAL_GPIO_WritePin(mpGpioMS2Output, mGpioPinMS2Output, GPIO_PIN_SET);
+      break;
+
+    case 8:
+      HAL_GPIO_WritePin(mpGpioMS1Output, mGpioPinMS1Output, GPIO_PIN_RESET);
+      HAL_GPIO_WritePin(mpGpioMS2Output, mGpioPinMS2Output, GPIO_PIN_RESET);
+      break;
+
+    case 16:
+      HAL_GPIO_WritePin(mpGpioMS1Output, mGpioPinMS1Output, GPIO_PIN_SET);
+      HAL_GPIO_WritePin(mpGpioMS2Output, mGpioPinMS2Output, GPIO_PIN_SET);
+      break;
+
+    default:
+      assert_param(false);
+      break;
+  }
 }
 
 void Stepper::OutputCompareIntCb(TIM_HandleTypeDef* htim)
