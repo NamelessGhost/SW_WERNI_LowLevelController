@@ -38,15 +38,19 @@ Lift::~Lift(void)
 void Lift::MoveUp(void)
 {
   if(mState == LIFT_DOWN)
-  mpDriveMotor->StartRotationBlocking(LIFT_VERTICAL_TRAVEL * LIFT_GEAR_FACTOR);
-  mState = LIFT_UP;
+  {
+    mpDriveMotor->StartRotationBlocking(LIFT_VERTICAL_TRAVEL * LIFT_GEAR_FACTOR);
+    mState = LIFT_UP;
+  }
 }
 
 void Lift::MoveDown(void)
 {
   if(mState == LIFT_UP)
-  mpDriveMotor->StartRotationBlocking(-LIFT_VERTICAL_TRAVEL * LIFT_GEAR_FACTOR);
-  mState = LIFT_DOWN;
+  {
+    mpDriveMotor->StartRotationBlocking(-LIFT_VERTICAL_TRAVEL * LIFT_GEAR_FACTOR);
+    mState = LIFT_DOWN;
+  }
 }
 
 void Lift::DoHoming(void)

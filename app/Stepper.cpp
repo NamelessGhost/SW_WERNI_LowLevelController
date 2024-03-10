@@ -29,10 +29,10 @@ Stepper::Stepper(StepperConfig_t config) : Iinterruptable()
   mTargetRotationAngle = 0;
   mStepsRotated = 0;
 
-  TMC2208Stepper* pTMC = new TMC2208Stepper();
-  pTMC->pdn_disable(1);
-  pTMC->en_spreadCycle(1);
-  pTMC->mres(1);
+//  TMC2208Stepper* pTMC = new TMC2208Stepper();
+//  pTMC->pdn_disable(1);
+//  pTMC->en_spreadCycle(1);
+//  pTMC->mres(1);
 }
 
 StepperConfig_t Stepper::GetDefaultConfiguration()
@@ -175,6 +175,8 @@ void Stepper::StartRotationBlocking(float angle)
 
 void Stepper::StartRotation(float angle)
 {
+  float lAngle = fabsf(angle);
+
   SetDirection(angle > 0);
   ReserveTimerChannel();
 
@@ -182,7 +184,7 @@ void Stepper::StartRotation(float angle)
   {
     mStepperState = ROTATING;
     mRotationState = ACCELERATING;
-    mTargetRotationAngle = angle;
+    mTargetRotationAngle = lAngle;
 
     //Zero parameters at start of rotation
     mStepsRotated = 0;
@@ -309,32 +311,35 @@ void Stepper::SetDirection(bool cw)
 
 void Stepper::SetDriverStepFactor(float stepFactor)
 {
-  uint32_t lStepFactor = 1/stepFactor;    //Half-Stepping -> = 2
-  switch(lStepFactor)
+  if(mpGpioMS1Output != NULL && mpGpioMS2Output != NULL)
   {
-    case 2:
-      HAL_GPIO_WritePin(mpGpioMS1Output, mGpioPinMS1Output, GPIO_PIN_SET);
-      HAL_GPIO_WritePin(mpGpioMS2Output, mGpioPinMS2Output, GPIO_PIN_RESET);
-      break;
+    uint32_t lStepFactor = 1/stepFactor;    //Half-Stepping -> = 2
+    switch(lStepFactor)
+    {
+      case 2:
+        HAL_GPIO_WritePin(mpGpioMS1Output, mGpioPinMS1Output, GPIO_PIN_SET);
+        HAL_GPIO_WritePin(mpGpioMS2Output, mGpioPinMS2Output, GPIO_PIN_RESET);
+        break;
 
-    case 4:
-      HAL_GPIO_WritePin(mpGpioMS1Output, mGpioPinMS1Output, GPIO_PIN_RESET);
-      HAL_GPIO_WritePin(mpGpioMS2Output, mGpioPinMS2Output, GPIO_PIN_SET);
-      break;
+      case 4:
+        HAL_GPIO_WritePin(mpGpioMS1Output, mGpioPinMS1Output, GPIO_PIN_RESET);
+        HAL_GPIO_WritePin(mpGpioMS2Output, mGpioPinMS2Output, GPIO_PIN_SET);
+        break;
 
-    case 8:
-      HAL_GPIO_WritePin(mpGpioMS1Output, mGpioPinMS1Output, GPIO_PIN_RESET);
-      HAL_GPIO_WritePin(mpGpioMS2Output, mGpioPinMS2Output, GPIO_PIN_RESET);
-      break;
+      case 8:
+        HAL_GPIO_WritePin(mpGpioMS1Output, mGpioPinMS1Output, GPIO_PIN_RESET);
+        HAL_GPIO_WritePin(mpGpioMS2Output, mGpioPinMS2Output, GPIO_PIN_RESET);
+        break;
 
-    case 16:
-      HAL_GPIO_WritePin(mpGpioMS1Output, mGpioPinMS1Output, GPIO_PIN_SET);
-      HAL_GPIO_WritePin(mpGpioMS2Output, mGpioPinMS2Output, GPIO_PIN_SET);
-      break;
+      case 16:
+        HAL_GPIO_WritePin(mpGpioMS1Output, mGpioPinMS1Output, GPIO_PIN_SET);
+        HAL_GPIO_WritePin(mpGpioMS2Output, mGpioPinMS2Output, GPIO_PIN_SET);
+        break;
 
-    default:
-      assert_param(false);
-      break;
+      default:
+        assert_param(false);
+        break;
+    }
   }
 }
 
