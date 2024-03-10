@@ -47,6 +47,18 @@ typedef struct {
   GPIO_TypeDef* pGpioStepOutput;
   uint16_t GpioPinStepOutput;
 
+  GPIO_TypeDef* pGpioEnableOutput;
+  uint16_t GpioPinEnableOutput;
+
+  GPIO_TypeDef* pGpioDirectionOutput;
+  uint16_t GpioPinDirectionOutput;
+
+  GPIO_TypeDef* pGpioMS1Output;
+  uint16_t GpioPinMS1Output;
+
+  GPIO_TypeDef* pGpioMS2Output;
+  uint16_t GpioPinMS2Output;
+
   //Stepper driver parameters
   float DriverStepFactor = 0.5;
   float MotorStepFactor = 1.0/200;
@@ -64,7 +76,10 @@ public:
   void StartRotation(float angle);    //Postitve -> CW  Negative -> CCW
   void StartRotationBlocking(float angle);  //Postitve -> CW  Negative -> CCW
   void StopRotation(void);
+  void Enable(bool enable);
   StepperState GetState(void);
+
+
   void OutputCompareIntCb(TIM_HandleTypeDef* htim) override;
 
 protected:
@@ -79,11 +94,26 @@ private:
   //**** Variables ****
   static bool sUsedTimerChannels[];
   Mutex mMutex;
+  bool mEnabled;
+
   TIM_HandleTypeDef* mpTimerHandle;
   int32_t mTimerChannel;
   HAL_TIM_ActiveChannel mTimerActiveChannel;
+
   GPIO_TypeDef* mpGpioStepOutput;
   uint16_t mGpioPinStepOutput;
+
+  GPIO_TypeDef* mpGpioEnableOutput;
+  uint16_t mGpioPinEnableOutput;
+
+  GPIO_TypeDef* mpGpioDirectionOutput;
+  uint16_t mGpioPinDirectionOutput;
+
+  GPIO_TypeDef* mpGpioMS1Output;
+  uint16_t mGpioPinMS1Output;
+
+  GPIO_TypeDef* mpGpioMS2Output;
+  uint16_t mGpioPinMS2Output;
 
   StepperState mStepperState;
   RotationState mRotationState;

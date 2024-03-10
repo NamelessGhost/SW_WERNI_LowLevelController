@@ -46,8 +46,20 @@ StepperConfig_t Stepper::GetDefaultConfiguration()
   lDefaultConfig.RolloutAngle = STEPPER_ROLLOUT_ANGLE;                    //rad
 
   //GPIO parameters
-  lDefaultConfig.pGpioStepOutput = NULL;    //Step output GPIO peripheral pointer
-  lDefaultConfig.GpioPinStepOutput = 0x00;  //Step output GPIO pin
+  lDefaultConfig.pGpioStepOutput = NULL;        //Step output GPIO peripheral pointer
+  lDefaultConfig.GpioPinStepOutput = 0x00;      //Step output GPIO pin
+
+  lDefaultConfig.pGpioEnableOutput = NULL;       //Step output GPIO peripheral pointer
+  lDefaultConfig.GpioPinEnableOutput = 0x00;          //Step output GPIO pin
+
+  lDefaultConfig.pGpioDirectionOutput = NULL;    //Step output GPIO peripheral pointer
+  lDefaultConfig.GpioPinDirectionOutput = 0x00;       //Step output GPIO pin
+
+  lDefaultConfig.pGpioMS1Output = NULL;          //Step output GPIO peripheral pointer
+  lDefaultConfig.GpioPinMS1Output = 0x00;             //Step output GPIO pin
+
+  lDefaultConfig.pGpioMS2Output = NULL;          //Step output GPIO peripheral pointer
+  lDefaultConfig.GpioPinMS2Output = 0x00;             //Step output GPIO pin
 
   //Stepper driver parameters
   lDefaultConfig.DriverStepFactor = STEPPER_DRIVER_STEP_FACTOR; //Half-stepping
@@ -99,6 +111,18 @@ StepperConfig_t Stepper::GetConfiguration(void)
   lConfig.pGpioStepOutput = mpGpioStepOutput;
   lConfig.GpioPinStepOutput = mGpioPinStepOutput;
 
+  lConfig.pGpioEnableOutput = mpGpioEnableOutput;
+  lConfig.GpioPinEnableOutput = mGpioPinEnableOutput;
+
+  lConfig.pGpioDirectionOutput = mpGpioDirectionOutput;
+  lConfig.GpioPinDirectionOutput = mGpioPinDirectionOutput;
+
+  lConfig.pGpioMS1Output = mpGpioMS1Output;
+  lConfig.GpioPinMS1Output = mGpioPinMS1Output;
+
+  lConfig.pGpioMS2Output = mpGpioMS2Output;
+  lConfig.GpioPinMS2Output = mGpioPinMS2Output;
+
   //Stepper driver parameters
   lConfig.DriverStepFactor = mDriverStepFactor;
   lConfig.MotorStepFactor = mMotorStepFactor;
@@ -117,6 +141,18 @@ void Stepper::SetConfiguration(StepperConfig_t config)
   //GPIO parameters
   mpGpioStepOutput = config.pGpioStepOutput;
   mGpioPinStepOutput = config.GpioPinStepOutput;
+
+  mpGpioEnableOutput = config.pGpioEnableOutput;
+  mGpioPinEnableOutput = config.GpioPinEnableOutput;
+
+  mpGpioDirectionOutput = config.pGpioDirectionOutput;
+  mGpioPinDirectionOutput = config.GpioPinDirectionOutput;
+
+  mpGpioMS1Output = config.pGpioMS1Output;
+  mGpioPinMS1Output = config.GpioPinMS1Output;
+
+  mpGpioMS2Output = config.pGpioMS2Output;
+  mGpioPinMS2Output = config.GpioPinMS2Output;
 
   //Stepper driver parameters
   mDriverStepFactor = config.DriverStepFactor;
@@ -171,6 +207,13 @@ void Stepper::StopRotation()
   HAL_TIM_OC_Stop_IT(mpTimerHandle, mTimerChannel);
 
   FreeTimerChannel();
+}
+
+void Stepper::Enable(bool enable)
+{
+  mEnabled = enable;
+  GPIO_PinState state = mEnabled ? GPIO_PIN_RESET:GPIO_PIN_SET;   //EN is low active
+  HAL_GPIO_WritePin(mpGpioEnableOutput, mGpioPinEnableOutput, state);
 }
 
 StepperState Stepper::GetState(void)
