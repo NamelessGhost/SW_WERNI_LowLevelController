@@ -32,6 +32,11 @@
 #define CUBEGRID_TARGET_ANGULAR_VELOCITY  2 * PI    //rad/S
 #define CUBEGRID_GEAR_FACTOR              3
 
+#define LIFT_HOMING_VERTICAL_VELOCITY     0.1           //m/s
+#define LIFT_TARGET_VERTICAL_VELOCITY     1             //m/s
+#define LIFT_GEAR_FACTOR                  10 * _2PI     //rad/m
+#define LIFT_VERTICAL_TRAVEL              0.15          //m
+
 #define MAGAZINESLOT_ANGLE_PER_CUBE       300       //degrees
 
 #define PI  3.14159f    //float

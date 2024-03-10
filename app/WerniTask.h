@@ -12,6 +12,7 @@
 #include "paradef.h"
 #include "CubeGrid.h"
 #include "MagazineSlot.h"
+#include "Lift.h"
 
 class WerniTask: public Task
 {
@@ -31,8 +32,8 @@ private:
   MagazineSlot mMagazineSlotRed;
   MagazineSlot mMagazineSlotYellow;
   MagazineSlot mMagazineSlotBlue;
-
   CubeGrid mCubeGrid;
+  Lift mCubeLift;
 };
 
 #endif /* WERNITASK_H_ */

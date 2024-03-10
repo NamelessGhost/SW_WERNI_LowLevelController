@@ -19,6 +19,7 @@ enum COMMAND
   CMD_NOT_ACKNOWLEDGE,
   CMD_ROTATE_GRID,
   CMD_PLACE_CUBES,
+  CMD_MOVE_LIFT,
   CMD_STATE,
 };
 
@@ -35,10 +36,17 @@ typedef struct
   uint8_t cubes_blue;
 }cmd_place_cubes_t;
 
+typedef enum
+{
+  MOVE_UP,
+  MOVE_DOWN
+}cmd_move_lift_t;
+
 typedef union
 {
   cmd_rotate_grid_t cmdRotateGrid;
   cmd_place_cubes_t cmdPlaceCubes;
+  cmd_move_lift_t cmdMoveLift;
   uint8_t dataField[16];
 }data_union_t;
 

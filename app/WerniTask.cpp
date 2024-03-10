@@ -78,6 +78,24 @@ void WerniTask::handleWerniMessage(Message* message)
     }
       break;
 
+    case CMD_MOVE_LIFT:
+    {
+      switch(lpMessage->dataUnion.cmdMoveLift)
+      {
+        case MOVE_UP:
+          mCubeLift.MoveUp();
+          break;
+
+        case MOVE_DOWN:
+          mCubeLift.MoveDown();
+          break;
+
+        default:
+          break;
+      }
+    }
+    break;
+
     case CMD_STATE:
       //TODO:Define what is supposed to happen here
       break;

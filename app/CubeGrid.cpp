@@ -12,10 +12,20 @@
 CubeGrid::CubeGrid(void)
 {
   mDriveMotorConf = Stepper::GetDefaultConfiguration();
-  mDriveMotorConf.GpioPinStepOutput = GPIO_PIN_3;
-  mDriveMotorConf.pGpioStepOutput = GPIOC;
+  mDriveMotorConf.GpioPinStepOutput = STPR_STP_GRID_Pin;
+  mDriveMotorConf.pGpioStepOutput = STPR_STP_GRID_GPIO_Port;
+  mDriveMotorConf.GpioPinEnableOutput = STPR_EN_GRID_Pin;
+  mDriveMotorConf.pGpioEnableOutput = STPR_EN_GRID_GPIO_Port;
+  mDriveMotorConf.GpioPinDirectionOutput = STPR_DIR_GRID_Pin;
+  mDriveMotorConf.pGpioDirectionOutput = STPR_DIR_GRID_GPIO_Port;
+  mDriveMotorConf.GpioPinMS1Output = STPR_MS1_Pin;
+  mDriveMotorConf.pGpioMS1Output = STPR_MS1_GPIO_Port;
+  mDriveMotorConf.GpioPinMS2Output = STPR_MS2_Pin;
+  mDriveMotorConf.pGpioMS2Output = STPR_MS2_GPIO_Port;
   mDriveMotorConf.TargetAngularVelocity = CUBEGRID_TARGET_ANGULAR_VELOCITY * CUBEGRID_GEAR_FACTOR;
+
   mpDriveMotor = new Stepper(mDriveMotorConf);
+  mpDriveMotor->Enable(true);
 }
 
 CubeGrid::~CubeGrid(void)
