@@ -79,7 +79,7 @@ typedef struct {
 class TMC2208
 {
 public:
-  TMC2208* Instance();
+  static TMC2208* Instance();
   void InitDriver();
   void WriteConfig();
   void ReadConfig();
