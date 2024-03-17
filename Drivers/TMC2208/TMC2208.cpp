@@ -11,32 +11,33 @@
 
 TMC2208::TMC2208()
 {
-
   //Default values for GCONF register
+  //Deviations from default values are commented
   mGconfSr.gconf.I_scale_analog = 1;
   mGconfSr.gconf.internal_Rsense = 0;
   mGconfSr.gconf.en_spreadcycle = 1;
   mGconfSr.gconf.shaft = 0;
   mGconfSr.gconf.index_otpw = 0;
   mGconfSr.gconf.index_step = 0;
-  mGconfSr.gconf.pdn_disable = 1;
-  mGconfSr.gconf.mstep_reg_select = 0;    //Microstep select using MS1,MS2
+  mGconfSr.gconf.pdn_disable = 1;         //Must be set when UART is used
+  mGconfSr.gconf.mstep_reg_select = 1;    //Microstep resolution set by MSETP register
   mGconfSr.gconf.multistep_filt = 1;
   mGconfSr.gconf.test_mode = 0;
 
-  mChopconfSr.chopconf.diss2vs = 0;
-  mChopconfSr.chopconf.diss2g = 0;
-  mChopconfSr.chopconf.dedge = 0;
-  mChopconfSr.chopconf.intpol = 0;   //Default is 1
-  mChopconfSr.chopconf.MRES = 1;  //Halfstepping
-  mChopconfSr.chopconf.reserved1 = 0;
-  mChopconfSr.chopconf.vsense = 1;   //Check!
-  mChopconfSr.chopconf.TBL = 0;
-  mChopconfSr.chopconf.reserved2 = 0;
-  mChopconfSr.chopconf.HEND = 0;
-  mChopconfSr.chopconf.HSTRT = 0;    //Check!
+  //Default values for CHOPCONF register
+  //Deviations from default values are commented
   mChopconfSr.chopconf.TOFF = 3;
-
+  mChopconfSr.chopconf.HSTRT = 5;
+  mChopconfSr.chopconf.HEND = 0;
+  mChopconfSr.chopconf.reserved2 = 0;
+  mChopconfSr.chopconf.TBL = 2;
+  mChopconfSr.chopconf.vsense = 0;
+  mChopconfSr.chopconf.reserved1 = 0;
+  mChopconfSr.chopconf.MRES = 4;      //Halfstepping (Step-Factor = 2^MRES / 256)
+  mChopconfSr.chopconf.intpol = 1;
+  mChopconfSr.chopconf.dedge = 0;
+  mChopconfSr.chopconf.diss2g = 0;
+  mChopconfSr.chopconf.diss2vs = 0;
 }
 
 TMC2208::~TMC2208()
@@ -52,29 +53,35 @@ void TMC2208::ReadConfig()
 
 void TMC2208::WriteConfig()
 {
+  //ReadConfig();
+
   WriteRegister(REG_ADDR_GCONF, &mGconfSr);
   WriteRegister(REG_ADDR_CHOPCONF, &mChopconfSr);
+
+  ReadConfig();
 }
 
 void TMC2208::ReadRegister(uint8_t regAddr, tmc2208_reg_data_t* pRegData)
 {
   tmc2208_read_msg_t lReadMsg;
   tmc2208_write_msg_t lReadResponse;
+  tmc2208_reg_data_t lReadReg;
 
   lReadMsg.header = 0x05;
   lReadMsg.address = 0x00;
-  lReadMsg.writeBit = 0x01;
+  lReadMsg.writeBit = 0x00;
   lReadMsg.regAddress = regAddr;
 
   lReadMsg.crc = CalculateCRC((uint8_t*)&lReadMsg, 3);
 
-  UartWrite((uint8_t*)&lReadMsg, 4);             //Send read request to TMC2208
-
+  UartWrite((uint8_t*)&lReadMsg, 4);        //Send read request to TMC2208
+  UartClearRxFifo();                            //Wait for message to fill Rx Fifo
   UartRead((uint8_t*)&lReadResponse, 8);    //Receive response from TMC2208
 
-  //Byteswap32((uint8_t*)&lReadResponse.regData);
+  lReadReg = SwapBytes(&lReadResponse.regData);
 
-  memcpy(pRegData, &lReadResponse.regData, sizeof(tmc2208_reg_data_t));
+  memcpy(pRegData, &lReadReg, sizeof(tmc2208_reg_data_t));
+  HAL_Delay(1);     //Give some time after read for driver to release line
 }
 
 void TMC2208::WriteRegister(uint8_t regAddr, const tmc2208_reg_data_t* pRegData)
@@ -133,4 +140,13 @@ void TMC2208::UartWrite(const uint8_t* pData, uint32_t len)
 void TMC2208::UartRead( uint8_t* pData, uint32_t len)
 {
   HAL_UART_Receive(&huart5, pData, len, 10);
+}
+
+void TMC2208::UartClearRxFifo()
+{
+  uint8_t buf;
+  while(__HAL_UART_GET_FLAG(&huart5, UART_FLAG_RXFNE))
+  {
+    HAL_UART_Receive(&huart5, &buf, 1, 0);
+  }
 }

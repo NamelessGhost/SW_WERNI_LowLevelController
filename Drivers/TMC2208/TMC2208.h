@@ -37,18 +37,18 @@ typedef union {
 typedef union {
   uint32_t value;
   struct {
-    uint32_t diss2vs          :1;   //BIT31
-    uint32_t diss2g           :1;
-    uint32_t dedge            :1;
-    uint32_t intpol           :1;
-    uint32_t MRES             :4;
-    uint32_t reserved1        :6;
-    uint32_t vsense           :1;
-    uint32_t TBL              :2;
-    uint32_t reserved2        :4;
-    uint32_t HEND             :4;
-    uint32_t HSTRT            :3;
-    uint32_t TOFF             :4;   //BIT0
+    uint8_t TOFF             :4;   //BIT0
+    uint8_t HSTRT            :3;
+    uint8_t HEND             :4;
+    uint8_t reserved2        :4;
+    uint8_t TBL              :2;
+    uint8_t vsense           :1;
+    uint8_t reserved1        :6;
+    uint8_t MRES             :4;
+    uint8_t intpol           :1;
+    uint8_t dedge            :1;
+    uint8_t diss2g           :1;
+    uint8_t diss2vs          :1;   //BIT31
   };
 } tmc2208_chopconf_reg_t;
 
@@ -97,6 +97,7 @@ private:
   tmc2208_reg_data_t SwapBytes(const tmc2208_reg_data_t* pReg);
   void UartWrite(const uint8_t* pData, uint32_t len);
   void UartRead( uint8_t* pData, uint32_t len);
+  void UartClearRxFifo();
 };
 
 #endif /* TMC2208_TMC2208_H_ */
