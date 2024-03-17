@@ -16,8 +16,8 @@ ComHandlerTask* ComHandlerTask::mspThis = 0;
 
 ComHandlerTask::ComHandlerTask(TaskId id, const char* name):
  Task(id, name),
- mRxBuffer(COMHANDLER_UART_RXBUF_SIZE),
- mTxBuffer(COMHANDLER_UART_TXBUF_SIZE)
+ mTxBuffer(COMHANDLER_UART_TXBUF_SIZE),
+ mRxBuffer(COMHANDLER_UART_RXBUF_SIZE)
 {
   mpIsrEventMsg = Message::reserveIsr(MSG_ID_TEMPLATETASK_EVENT, ComHandlerTaskId, 0);
 

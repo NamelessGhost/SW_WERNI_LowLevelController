@@ -7,11 +7,45 @@
 
 #include <MagazineSlot.h>
 
-MagazineSlot::MagazineSlot(void)
+MagazineSlot::MagazineSlot(MagazineSlotColor color)
 {
+  mColor = color;
   mDriveMotorConf = Stepper::GetDefaultConfiguration();
-  mDriveMotorConf.GpioPinStepOutput = GPIO_PIN_3;
-  mDriveMotorConf.pGpioStepOutput = GPIOC;
+
+  switch(mColor){
+    case RED:
+      mDriveMotorConf.GpioPinStepOutput = STPR_STP_MAG_R_Pin;
+      mDriveMotorConf.pGpioStepOutput = STPR_STP_MAG_R_GPIO_Port;
+      mDriveMotorConf.GpioPinEnableOutput = STPR_EN_MAG_R_Pin;
+      mDriveMotorConf.pGpioEnableOutput = STPR_EN_MAG_R_GPIO_Port;
+      mDriveMotorConf.GpioPinDirectionOutput = STPR_DIR_MAG_R_Pin;
+      mDriveMotorConf.pGpioDirectionOutput = STPR_DIR_MAG_R_GPIO_Port;
+      break;
+    case YELLOW:
+      mDriveMotorConf.GpioPinStepOutput = STPR_STP_MAG_Y_Pin;
+      mDriveMotorConf.pGpioStepOutput = STPR_STP_MAG_Y_GPIO_Port;
+      mDriveMotorConf.GpioPinEnableOutput = STPR_EN_MAG_Y_Pin;
+      mDriveMotorConf.pGpioEnableOutput = STPR_EN_MAG_Y_GPIO_Port;
+      mDriveMotorConf.GpioPinDirectionOutput = STPR_DIR_MAG_Y_Pin;
+      mDriveMotorConf.pGpioDirectionOutput = STPR_DIR_MAG_Y_GPIO_Port;
+      break;
+    case BLUE:
+      mDriveMotorConf.GpioPinStepOutput = STPR_STP_MAG_B_Pin;
+      mDriveMotorConf.pGpioStepOutput = STPR_STP_MAG_B_GPIO_Port;
+      mDriveMotorConf.GpioPinEnableOutput = STPR_EN_MAG_B_Pin;
+      mDriveMotorConf.pGpioEnableOutput = STPR_EN_MAG_B_GPIO_Port;
+      mDriveMotorConf.GpioPinDirectionOutput = STPR_DIR_MAG_B_Pin;
+      mDriveMotorConf.pGpioDirectionOutput = STPR_DIR_MAG_B_GPIO_Port;
+      break;
+    default:
+      assert_param(false);    //Invalid color
+      break;
+  }
+  mDriveMotorConf.GpioPinMS1Output = STPR_MS1_Pin;
+  mDriveMotorConf.pGpioMS1Output = STPR_MS1_GPIO_Port;
+  mDriveMotorConf.GpioPinMS2Output = STPR_MS2_Pin;
+  mDriveMotorConf.pGpioMS2Output = STPR_MS2_GPIO_Port;
+
   mDriveMotorConf.TargetAngularVelocity = CUBEGRID_TARGET_ANGULAR_VELOCITY * CUBEGRID_GEAR_FACTOR;
   mpDriveMotor = new Stepper(mDriveMotorConf);
 

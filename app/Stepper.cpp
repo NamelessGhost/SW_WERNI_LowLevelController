@@ -192,7 +192,6 @@ void Stepper::StartRotation(float angle)
     mStepsRotated = 0;
     mCurrentAngularVeloctiy = 0;
     mCurrentRotationAngle = 0;
-    mCurrentRotationAngle = 0;
 
     volatile uint32_t* ptr = &velocitySWV;  //TODO:Remove DEBUG
 

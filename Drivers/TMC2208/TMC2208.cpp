@@ -84,7 +84,7 @@ void TMC2208::SetDriverStepFactor(float stepFactor)
   assert_param(lStepFactor <= 8);
   if(lStepFactor <= 8)
   {
-    mChopconfSr.chopconf.MRES = 8-lStepFactor;
+    mChopconfSr.chopconf.MRES = 8 - lStepFactor + 1;
   }
 }
 
@@ -126,6 +126,7 @@ void TMC2208::WriteRegister(uint8_t regAddr, const tmc2208_reg_data_t* pRegData)
   lWriteMsg.crc = CalculateCRC((uint8_t*)&lWriteMsg, sizeof(lWriteMsg)-1);
 
   UartWrite((uint8_t*)&lWriteMsg, 8);
+  HAL_Delay(1);     //Give some time after write for driver to process
 }
 
 uint8_t TMC2208::CalculateCRC(uint8_t data[], uint8_t len)

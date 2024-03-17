@@ -16,15 +16,22 @@ enum MagazineSlotState {
   DISPENSING,
 };
 
+enum MagazineSlotColor {
+  RED,
+  YELLOW,
+  BLUE
+};
+
 class MagazineSlot
 {
 public:
-  MagazineSlot();
+  MagazineSlot(MagazineSlotColor color);
   virtual ~MagazineSlot();
   void StartDispensingCubes(uint32_t cnt);
   bool CheckFinished(void);
 
   MagazineSlotState mState;
+  MagazineSlotColor mColor;
 
 private:
   Stepper* mpDriveMotor;

@@ -29,11 +29,11 @@ private:
 
   static WerniTask* mspThis;
 
+  CubeGrid mCubeGrid;
+  Lift mCubeLift;
   MagazineSlot mMagazineSlotRed;
   MagazineSlot mMagazineSlotYellow;
   MagazineSlot mMagazineSlotBlue;
-  CubeGrid mCubeGrid;
-  Lift mCubeLift;
 };
 
 #endif /* WERNITASK_H_ */

@@ -13,7 +13,10 @@
 WerniTask* WerniTask::mspThis = 0;
 
 WerniTask::WerniTask(TaskId id, const char* name):
-Task(id, name)
+Task(id, name),
+mMagazineSlotRed(RED),
+mMagazineSlotYellow(YELLOW),
+mMagazineSlotBlue(BLUE)
 {
 
 
