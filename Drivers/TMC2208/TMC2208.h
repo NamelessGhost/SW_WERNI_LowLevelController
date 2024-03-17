@@ -79,18 +79,22 @@ typedef struct {
 class TMC2208
 {
 public:
-  TMC2208();
-  virtual ~TMC2208();
+  TMC2208* Instance();
+  void InitDriver();
   void WriteConfig();
   void ReadConfig();
+  void SetDriverStepFactor(float stepFactor);
 
 private:
-
+  static TMC2208* mspThis;
+  static bool msDriverInitialized;
   //Shadow registers
   tmc2208_reg_data_t mGconfSr;
   tmc2208_reg_data_t mChopconfSr;
 
   //Private functions
+  TMC2208();
+  virtual ~TMC2208();
   void ReadRegister(uint8_t regAddr, tmc2208_reg_data_t* pRegData);
   void WriteRegister(uint8_t regAddr, const tmc2208_reg_data_t* pRegData);
   uint8_t CalculateCRC(uint8_t data[], uint8_t len);

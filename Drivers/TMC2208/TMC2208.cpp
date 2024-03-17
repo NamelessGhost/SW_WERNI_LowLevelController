@@ -9,6 +9,9 @@
 #include <string.h>
 #include "usart.h"
 
+TMC2208* TMC2208::mspThis = NULL;
+bool TMC2208::msDriverInitialized = false;
+
 TMC2208::TMC2208()
 {
   //Default values for GCONF register
@@ -45,6 +48,24 @@ TMC2208::~TMC2208()
   // TODO Auto-generated destructor stub
 }
 
+TMC2208* TMC2208::Instance()
+{
+  if(mspThis == NULL)
+  {
+    mspThis = new TMC2208;
+  }
+  return mspThis;
+}
+
+void TMC2208::InitDriver()
+{
+  if(msDriverInitialized == false)
+  {
+    WriteConfig();
+    msDriverInitialized = true;
+  }
+}
+
 void TMC2208::ReadConfig()
 {
   ReadRegister(REG_ADDR_GCONF, &mGconfSr);
@@ -53,12 +74,18 @@ void TMC2208::ReadConfig()
 
 void TMC2208::WriteConfig()
 {
-  //ReadConfig();
-
   WriteRegister(REG_ADDR_GCONF, &mGconfSr);
   WriteRegister(REG_ADDR_CHOPCONF, &mChopconfSr);
+}
 
-  ReadConfig();
+void TMC2208::SetDriverStepFactor(float stepFactor)
+{
+  uint8_t lStepFactor = 1/stepFactor;
+  assert_param(lStepFactor <= 8);
+  if(lStepFactor <= 8)
+  {
+    mChopconfSr.chopconf.MRES = 8-lStepFactor;
+  }
 }
 
 void TMC2208::ReadRegister(uint8_t regAddr, tmc2208_reg_data_t* pRegData)
