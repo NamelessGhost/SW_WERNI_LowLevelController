@@ -10,7 +10,8 @@
 #include "main.h"
 #include "cmath"
 #include "FreeRTOS.h"
-#include "TMC2208Stepper.h"
+#include "TMC2208.h"
+
 
 bool Stepper::sUsedTimerChannels[STEPPER_TIMER_MAX_CHANNELS] = {0};
 
@@ -28,11 +29,6 @@ Stepper::Stepper(StepperConfig_t config) : Iinterruptable()
   mCurrentRotationAngle = 0;			//in rad/s
   mTargetRotationAngle = 0;
   mStepsRotated = 0;
-
-//  TMC2208Stepper* pTMC = new TMC2208Stepper();
-//  pTMC->pdn_disable(1);
-//  pTMC->en_spreadCycle(1);
-//  pTMC->mres(1);
 }
 
 StepperConfig_t Stepper::GetDefaultConfiguration()
@@ -160,8 +156,14 @@ void Stepper::SetConfiguration(StepperConfig_t config)
 
   mDriveTrainFactor = mDriverStepFactor * mMotorStepFactor;
   assert_param(mpGpioStepOutput != NULL);
+  assert_param(mpGpioEnableOutput != NULL);
+  assert_param(mpGpioDirectionOutput != NULL);
 
   SetDriverStepFactor(mDriverStepFactor);
+
+#ifdef STEPPER_USE_UART
+  TMC2208::Instance()->InitDriver();
+#endif
 }
 
 void Stepper::StartRotationBlocking(float angle)
@@ -311,36 +313,40 @@ void Stepper::SetDirection(bool cw)
 
 void Stepper::SetDriverStepFactor(float stepFactor)
 {
-  if(mpGpioMS1Output != NULL && mpGpioMS2Output != NULL)
+#ifdef STEPPER_USE_UART
+  TMC2208::Instance()->SetDriverStepFactor(stepFactor);
+#else
+  assert_param(mpGpioMS1Output != NULL);
+  assert_param(mpGpioMS2Output != NULL);
+
+  uint32_t lStepFactor = 1/stepFactor;    //Half-Stepping -> = 2
+  switch(lStepFactor)
   {
-    uint32_t lStepFactor = 1/stepFactor;    //Half-Stepping -> = 2
-    switch(lStepFactor)
-    {
-      case 2:
-        HAL_GPIO_WritePin(mpGpioMS1Output, mGpioPinMS1Output, GPIO_PIN_SET);
-        HAL_GPIO_WritePin(mpGpioMS2Output, mGpioPinMS2Output, GPIO_PIN_RESET);
-        break;
+    case 2:
+      HAL_GPIO_WritePin(mpGpioMS1Output, mGpioPinMS1Output, GPIO_PIN_SET);
+      HAL_GPIO_WritePin(mpGpioMS2Output, mGpioPinMS2Output, GPIO_PIN_RESET);
+      break;
 
-      case 4:
-        HAL_GPIO_WritePin(mpGpioMS1Output, mGpioPinMS1Output, GPIO_PIN_RESET);
-        HAL_GPIO_WritePin(mpGpioMS2Output, mGpioPinMS2Output, GPIO_PIN_SET);
-        break;
+    case 4:
+      HAL_GPIO_WritePin(mpGpioMS1Output, mGpioPinMS1Output, GPIO_PIN_RESET);
+      HAL_GPIO_WritePin(mpGpioMS2Output, mGpioPinMS2Output, GPIO_PIN_SET);
+      break;
 
-      case 8:
-        HAL_GPIO_WritePin(mpGpioMS1Output, mGpioPinMS1Output, GPIO_PIN_RESET);
-        HAL_GPIO_WritePin(mpGpioMS2Output, mGpioPinMS2Output, GPIO_PIN_RESET);
-        break;
+    case 8:
+      HAL_GPIO_WritePin(mpGpioMS1Output, mGpioPinMS1Output, GPIO_PIN_RESET);
+      HAL_GPIO_WritePin(mpGpioMS2Output, mGpioPinMS2Output, GPIO_PIN_RESET);
+      break;
 
-      case 16:
-        HAL_GPIO_WritePin(mpGpioMS1Output, mGpioPinMS1Output, GPIO_PIN_SET);
-        HAL_GPIO_WritePin(mpGpioMS2Output, mGpioPinMS2Output, GPIO_PIN_SET);
-        break;
+    case 16:
+      HAL_GPIO_WritePin(mpGpioMS1Output, mGpioPinMS1Output, GPIO_PIN_SET);
+      HAL_GPIO_WritePin(mpGpioMS2Output, mGpioPinMS2Output, GPIO_PIN_SET);
+      break;
 
-      default:
-        assert_param(false);
-        break;
-    }
+    default:
+      assert_param(false);
+      break;
   }
+#endif
 }
 
 void Stepper::OutputCompareIntCb(TIM_HandleTypeDef* htim)
