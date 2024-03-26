@@ -9,43 +9,49 @@
 #define PARADEF_H_
 #include <stdint.h>
 
-#define PI  3.14159f    //float
-#define _2PI 6.28318f   //float
+#define PI  (3.14159f)    //float
+#define _2PI (6.28318f)   //float
 #define DEG_TO_RAD(degrees) ((degrees) * PI / 180.0)
 
-#define STEPPER_STEP_TIMER_HANDLE         &htim1
-#define STEPPER_TIMER_FREQUENCY           170000000   //Timer input clock
-#define STEPPER_TIMER_PRESCALER           850         //Timer internal prescaler
-#define STEPPER_TIMER_CNT_FREQUENCY       STEPPER_TIMER_FREQUENCY / STEPPER_TIMER_PRESCALER
-#define STEPPER_TIMER_MAX_CHANNELS        4
+#define STEPPER_STEP_TIMER_HANDLE           (&htim1)
+#define STEPPER_TIMER_FREQUENCY             (170000000)   //Timer input clock
+#define STEPPER_TIMER_PRESCALER             (850)         //Timer internal prescaler
+#define STEPPER_TIMER_CNT_FREQUENCY         (STEPPER_TIMER_FREQUENCY / STEPPER_TIMER_PRESCALER)
+#define STEPPER_TIMER_MAX_CHANNELS          (4)
 #define STEPPER_USE_UART
 
-#define STEPPER_START_ANGULAR_VELOCITY    1 * PI  //rad/s
-#define STEPPER_TARGET_ANGULAR_VELOCITY   2 * PI    //rad/s
-#define STEPPER_ANGULAR_ACCELERATION      4 * PI    //rad/s^2
-#define STEPPER_ROLLOUT_ANGLE             PI / 100   //rad
+#define STEPPER_START_ANGULAR_VELOCITY      (1 * PI)    //rad/s
+#define STEPPER_TARGET_ANGULAR_VELOCITY     (2 * PI)    //rad/s
+#define STEPPER_ANGULAR_ACCELERATION        (4 * PI)    //rad/s^2
+#define STEPPER_ROLLOUT_ANGLE               (PI / 100)  //rad
 
-#define STEPPER_DRIVER_STEP_FACTOR        1.0/2     //Half-stepping
-#define STEPPER_MOTOR_STEP_FACTOR         1.0/200   //Motor 200Steps/rotation
+#define STEPPER_DRIVER_STEP_FACTOR          (1.0f/2)    //Half-stepping
+#define STEPPER_MOTOR_STEP_FACTOR           (1.0f/200)  //Motor 200Steps/rotation
 
-#define COMHANDLER_UART_RXBUF_SIZE        256       //Rx Buffer size in bytes
-#define COMHANDLER_UART_TXBUF_SIZE        256       //Rx Buffer size in bytes
-#define COMHANDLER_UART_PREAMBLE          "AAAB"
-#define COMHANDLER_UART_PREAMBLE_LEN      4
+#define COMHANDLER_UART_RXBUF_SIZE          (256)       //Rx Buffer size in bytes
+#define COMHANDLER_UART_TXBUF_SIZE          (256)       //Rx Buffer size in bytes
+#define COMHANDLER_UART_PREAMBLE            ("AAAB")
+#define COMHANDLER_UART_PREAMBLE_LEN        (4)
 
-#define CUBEGRID_HOMING_ANGULAR_VELOCITY  1 * PI    //rad/s
-#define CUBEGRID_TARGET_ANGULAR_VELOCITY  2 * PI    //rad/S
-#define CUBEGRID_GEAR_FACTOR              3
+#define CUBEGRID_HOMING_ANGULAR_VELOCITY    (1 * PI)    //rad/s
+#define CUBEGRID_TARGET_ANGULAR_VELOCITY    (2 * PI)    //rad/S
+#define CUBEGRID_GEAR_FACTOR                (3)
 
-#define LIFT_HOMING_VERTICAL_VELOCITY     0.1           //m/s
-#define LIFT_TARGET_VERTICAL_VELOCITY     1             //m/s
-#define LIFT_GEAR_FACTOR                  10 * _2PI     //rad/m
-#define LIFT_VERTICAL_TRAVEL              0.15          //m
+#define LIFT_HOMING_VERTICAL_VELOCITY       (0.1f)          //m/s
+#define LIFT_TARGET_VERTICAL_VELOCITY       (1)             //m/s
+#define LIFT_GEAR_FACTOR                    (10 * _2PI)     //rad/m
+#define LIFT_VERTICAL_TRAVEL                (0.15f)         //m
 
-#define MAGAZINESLOT_ANGLE_PER_CUBE       300       //degrees
+#define MAGAZINESLOT_ANGLE_PER_CUBE         (300)           //degrees
 
-#define ENERGY_MEASUREMENT_TIMER_HANDLE   &htim7    //used to trigger regular adc conversions
-#define ENERGY_MEASUREMENT_ADC_HANDLE     &hadc1
+#define ENERGY_MEASUREMENT_TIMER_HANDLE           (&htim7)        //Used to trigger regular adc conversions
+#define ENERGY_MEASUREMENT_TIMER_CNT_PERIOD       (0.01f)         //Timer update period
+#define ENERGY_MEASUREMENT_ADC_HANDLE             (&hadc1)
+#define ENERGY_MEASUREMENT_ADC_VREF               (3.3f)          //ADC fullscale voltage
+#define ENERGY_MEASUREMENT_ADC_RESOLUTION         (4096)          //12bit
+#define ENERGY_MEASUREMENT_VDD_DIF_GAIN           (90.9091e-3f) //Voltage divider gain R2/(R1+R2)
+#define ENERGY_MEASUREMENT_CURR_AMP_GAIN          (50)            //INA186 gain in V/V
+#define ENERGY_MEASUREMENT_CURR_SHUNT_R           (0.02f)         //Shunt resistance in Ohm
 
 #endif /* PARADEF_H_ */
 

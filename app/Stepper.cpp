@@ -350,20 +350,23 @@ void Stepper::SetDriverStepFactor(float stepFactor)
 
 void Stepper::OutputCompareIntCb(TIM_HandleTypeDef* htim)
 {
-  if(htim->Channel == mTimerActiveChannel){       //If the corresponding timer channel creates an interrupt
+  if(htim->Instance == STEPPER_STEP_TIMER_HANDLE->Instance)
+  {
+    if(htim->Channel == mTimerActiveChannel){       //If the corresponding timer channel creates an interrupt
 
-    uint32_t lPreviousCompareValue = __HAL_TIM_GET_COMPARE(mpTimerHandle, mTimerChannel);
+      uint32_t lPreviousCompareValue = __HAL_TIM_GET_COMPARE(mpTimerHandle, mTimerChannel);
 
-    if(mStepOutputState == OUTPUT_LOW){
-      mStepOutputState = OUTPUT_HIGH;
-      mStepsRotated += 1;
+      if(mStepOutputState == OUTPUT_LOW){
+        mStepOutputState = OUTPUT_HIGH;
+        mStepsRotated += 1;
+      }
+      else mStepOutputState = OUTPUT_LOW;
+
+      HAL_GPIO_WritePin(mpGpioStepOutput, mGpioPinStepOutput, (GPIO_PinState)mStepOutputState);
+
+      uint32_t ticks = CalculateTicksUntilNextStep()/2;
+
+      __HAL_TIM_SET_COMPARE(mpTimerHandle, mTimerChannel, lPreviousCompareValue + ticks);   // Divide by to to get half period step output low and half period step output high
     }
-    else mStepOutputState = OUTPUT_LOW;
-
-    HAL_GPIO_WritePin(mpGpioStepOutput, mGpioPinStepOutput, (GPIO_PinState)mStepOutputState);
-
-    uint32_t ticks = CalculateTicksUntilNextStep()/2;
-
-    __HAL_TIM_SET_COMPARE(mpTimerHandle, mTimerChannel, lPreviousCompareValue + ticks);   // Divide by to to get half period step output low and half period step output high
   }
 }
