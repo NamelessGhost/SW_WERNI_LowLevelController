@@ -79,13 +79,11 @@ public:
   void Enable(bool enable);
   StepperState GetState(void);
 
-
-  void OutputCompareIntCb(TIM_HandleTypeDef* htim) override;
-
 protected:
 
 private:
   //**** Function prototypes ****
+  void OutputCompareIntCb(TIM_HandleTypeDef* htim) override;
   void ReserveTimerChannel(void);
   void FreeTimerChannel(void);
   bool IsTimeToStartDecelerating(void);

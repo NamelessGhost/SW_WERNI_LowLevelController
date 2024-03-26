@@ -13,6 +13,7 @@
 #include "CubeGrid.h"
 #include "MagazineSlot.h"
 #include "Lift.h"
+#include "EnergyMeasurement.h"
 
 class WerniTask: public Task
 {
@@ -34,6 +35,7 @@ private:
   MagazineSlot mMagazineSlotRed;
   MagazineSlot mMagazineSlotYellow;
   MagazineSlot mMagazineSlotBlue;
+  EnergyMeasurement mEnergyMeasurement;
 };
 
 #endif /* WERNITASK_H_ */

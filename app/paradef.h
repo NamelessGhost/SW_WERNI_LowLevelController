@@ -9,6 +9,10 @@
 #define PARADEF_H_
 #include <stdint.h>
 
+#define PI  3.14159f    //float
+#define _2PI 6.28318f   //float
+#define DEG_TO_RAD(degrees) ((degrees) * PI / 180.0)
+
 #define STEPPER_STEP_TIMER_HANDLE         &htim1
 #define STEPPER_TIMER_FREQUENCY           170000000   //Timer input clock
 #define STEPPER_TIMER_PRESCALER           850         //Timer internal prescaler
@@ -40,10 +44,8 @@
 
 #define MAGAZINESLOT_ANGLE_PER_CUBE       300       //degrees
 
-#define PI  3.14159f    //float
-#define _2PI 6.28318f   //float
-#define DEG_TO_RAD(degrees) ((degrees) * PI / 180.0)
-
+#define ENERGY_MEASUREMENT_TIMER_HANDLE   &htim7    //used to trigger regular adc conversions
+#define ENERGY_MEASUREMENT_ADC_HANDLE     &hadc1
 
 #endif /* PARADEF_H_ */
 
