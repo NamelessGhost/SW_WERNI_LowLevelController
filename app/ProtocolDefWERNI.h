@@ -20,7 +20,9 @@ enum COMMAND
   CMD_ROTATE_GRID,
   CMD_PLACE_CUBES,
   CMD_MOVE_LIFT,
-  CMD_STATE,
+  CMD_GET_STATE,
+  CMD_PAUSE_BUILD,
+  CMD_RESUME_BUILD
 };
 
 typedef struct
@@ -41,6 +43,12 @@ typedef enum
   MOVE_UP,
   MOVE_DOWN
 }cmd_move_lift_t;
+
+typedef struct
+{
+
+}cmd_get_state_t;
+
 
 typedef union
 {

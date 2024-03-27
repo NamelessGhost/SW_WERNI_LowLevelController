@@ -25,7 +25,6 @@ enum TaskId
   TemplateTaskId,
   ComHandlerTaskId,
   WerniTaskId,
-//  LopTaskId
 };
 
 class TaskList

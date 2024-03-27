@@ -8,8 +8,12 @@
 #ifndef WERNITASK_H_
 #define WERNITASK_H_
 
+#include "queue"
 #include "TaskClass.h"
+#include "Timer.h"
 #include "paradef.h"
+#include "ProtocolDefWERNI.h"
+
 #include "CubeGrid.h"
 #include "MagazineSlot.h"
 #include "Lift.h"
@@ -26,9 +30,24 @@ protected:
   virtual void handleMessage(Message* message);
 
 private:
-  void handleWerniMessage(Message* message);
+
+  enum STATES
+  {
+    READY,
+    BUILDING,
+    BUILD_PAUSED,
+    BUILD_ABORTED
+  }mState;
+
+  void SortWerniMessage(Message* message);
+  void HandleMessageQueue(void);
+  void RotateGrid(message_t* message);
+  void PlaceCubes(message_t* message);
+  void MoveLift(message_t* message);
 
   static WerniTask* mspThis;
+  Timer mUpdateTimer;
+  std::queue<message_t> mMessageQueue;
 
   CubeGrid mCubeGrid;
   Lift mCubeLift;
