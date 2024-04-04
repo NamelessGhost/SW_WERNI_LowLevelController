@@ -6,7 +6,8 @@
  */
 
 #include <WerniTask.h>
-
+#include "Message.h"
+#include "string.h"
 
 
 WerniTask* WerniTask::mspThis = 0;
@@ -74,7 +75,7 @@ void WerniTask::SortWerniMessage(Message* message)
       break;
 
     case CMD_GET_STATE:
-      //TODO:Immediately return state to ComHandlerTask
+      SendState();
       break;
 
     default:
@@ -158,5 +159,21 @@ void WerniTask::MoveLift(message_t* message)
   }
 }
 
+void WerniTask::SendState(void)
+{
+  message_t lStateMessage;
+
+  //TODO:Actually fill the state here!
+  lStateMessage.cmd = CMD_SEND_STATE;
+  lStateMessage.dataUnion.cmdSendState.dummy1 = 0xCA;
+  lStateMessage.dataUnion.cmdSendState.dummy2 = 0xFF;
+  lStateMessage.dataUnion.cmdSendState.dummy3 = 0xEE;
+  lStateMessage.dataUnion.cmdSendState.dummy4 = 0xAA;
+
+  //Create memory message and send to Werni Task
+  Message* lpMsg = Message::reserve(MSG_ID_WERNI_MESSAGE, ComHandlerTaskId, sizeof(lStateMessage));
+  memcpy(lpMsg->mem()->memory, &lStateMessage, sizeof(lStateMessage));
+  lpMsg->sendMsg();
+}
 
 

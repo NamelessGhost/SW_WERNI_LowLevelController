@@ -21,6 +21,7 @@ enum COMMAND
   CMD_PLACE_CUBES,
   CMD_MOVE_LIFT,
   CMD_GET_STATE,
+  CMD_SEND_STATE,
   CMD_PAUSE_BUILD,
   CMD_RESUME_BUILD
 };
@@ -44,23 +45,26 @@ typedef enum
   MOVE_DOWN
 }cmd_move_lift_t;
 
+
 typedef struct
 {
-
-}cmd_get_state_t;
-
+  uint8_t dummy1;
+  uint8_t dummy2;
+  uint8_t dummy3;
+  uint8_t dummy4;
+}cmd_send_state_t;
 
 typedef union
 {
   cmd_rotate_grid_t cmdRotateGrid;
   cmd_place_cubes_t cmdPlaceCubes;
   cmd_move_lift_t cmdMoveLift;
+  cmd_send_state_t cmdSendState;
   uint8_t dataField[16];
 }data_union_t;
 
 typedef struct{
   uint8_t cmd;
-  uint8_t len;
   data_union_t dataUnion;
   uint8_t checksum;
 }message_t;

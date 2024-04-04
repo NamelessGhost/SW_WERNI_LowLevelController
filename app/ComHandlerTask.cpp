@@ -50,6 +50,21 @@ void ComHandlerTask::handleMessage(Message* message)
 
       break;
     }
+    case MSG_ID_WERNI_MESSAGE:
+    {
+      //TODO:Fix this, its ugly! Check if buffer has space first! Add memcpy interface to buffer!
+      mTxBuffer.WriteByte('A');
+      mTxBuffer.WriteByte('A');
+      mTxBuffer.WriteByte('A');
+      mTxBuffer.WriteByte('B');
+      for(int i=0; i<sizeof(message_t);i++)
+      {
+        mTxBuffer.WriteByte(((unsigned char*)message->mem()->memory)[i]);
+      }
+      mTxBuffer.WriteByte(12);  //CRC hahaha
+      TransmitPendingData();
+      break;
+    }
     case MSG_ID_TIMEOUT:
     {
       switch(message->data().longword)
@@ -70,6 +85,7 @@ void ComHandlerTask::handleMessage(Message* message)
   }
 }
 
+//TODO:Check if message ID is duplicate, if case then send NACK
 void ComHandlerTask::ProcessReceivedData(void)
 {
   message_t lReceivedMessage;
@@ -81,10 +97,15 @@ void ComHandlerTask::ProcessReceivedData(void)
     uint8_t lChecksum = CalculateChecksum(&lReceivedMessage, sizeof(lReceivedMessage) - sizeof(lReceivedMessage.checksum));
     if(lChecksum == lReceivedMessage.checksum)
     {
+      //TODO:SendCommand(ACK)
       //Create memory message and send to Werni Task
       Message* lpMsg = Message::reserve(MSG_ID_WERNI_MESSAGE, WerniTaskId, sizeof(lReceivedMessage));
       memcpy(lpMsg->mem()->memory, &lReceivedMessage, sizeof(lReceivedMessage));
       lpMsg->sendMsg();
+    }
+    else
+    {
+      //TODO:SendCommand(CRC_ERR)
     }
   }
 }

@@ -44,6 +44,7 @@ private:
   void RotateGrid(message_t* message);
   void PlaceCubes(message_t* message);
   void MoveLift(message_t* message);
+  void SendState(void);
 
   static WerniTask* mspThis;
   Timer mUpdateTimer;
