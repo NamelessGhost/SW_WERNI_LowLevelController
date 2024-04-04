@@ -27,7 +27,9 @@ ComHandlerTask::ComHandlerTask(TaskId id, const char* name):
   mpUpdateTimer->setSingleShot(false);
   mpUpdateTimer->start();
 
-  mpHuart = &hlpuart1;
+  mpHuart = COMHANDLER_UART_HANDLE;
+
+  __HAL_UART_ENABLE_IT(mpHuart, UART_IT_RXFT);    //Rx FIFO threashold reached interrupt	//TODO:Put in message start
 }
 
 ComHandlerTask* ComHandlerTask::instance(void)
@@ -127,5 +129,5 @@ void ComHandlerTask::UartRxDataAvailableCb(UART_HandleTypeDef* huart)
 
 void ComHandlerTask::UartRxRtoCallback(UART_HandleTypeDef* huart)
 {
-  HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_0);
+
 }

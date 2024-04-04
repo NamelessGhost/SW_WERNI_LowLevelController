@@ -20,6 +20,7 @@ void app_init()
   ComHandlerTask::instance();
   WerniTask::instance();
 
+
   //Periodic CAN timer task
 //  CanTask::instance();
 //

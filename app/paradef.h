@@ -1,8 +1,8 @@
 /*
  * paradef.h
  *
- *  Created on: Dec 28, 2019
- *      Author: axel
+ *  Created on: Jan 01, 2024
+ *      Author: andre
  */
 
 #ifndef PARADEF_H_
@@ -22,12 +22,13 @@
 
 #define STEPPER_START_ANGULAR_VELOCITY      (1 * PI)    //rad/s
 #define STEPPER_TARGET_ANGULAR_VELOCITY     (2 * PI)    //rad/s
-#define STEPPER_ANGULAR_ACCELERATION        (4 * PI)    //rad/s^2
+#define STEPPER_ANGULAR_ACCELERATION        (2 * PI)    //rad/s^2
 #define STEPPER_ROLLOUT_ANGLE               (PI / 100)  //rad
 
 #define STEPPER_DRIVER_STEP_FACTOR          (1.0f/2)    //Half-stepping
 #define STEPPER_MOTOR_STEP_FACTOR           (1.0f/200)  //Motor 200Steps/rotation
 
+#define COMHANDLER_UART_HANDLE				&huart1 //&hlpuart1	  //UART peripheral
 #define COMHANDLER_UART_RXBUF_SIZE          (256)       //Rx Buffer size in bytes
 #define COMHANDLER_UART_TXBUF_SIZE          (256)       //Rx Buffer size in bytes
 #define COMHANDLER_UART_PREAMBLE            ("AAAB")
@@ -38,7 +39,7 @@
 #define CUBEGRID_GEAR_FACTOR                (3)
 
 #define LIFT_HOMING_VERTICAL_VELOCITY       (0.1f)          //m/s
-#define LIFT_TARGET_VERTICAL_VELOCITY       (1)             //m/s
+#define LIFT_TARGET_VERTICAL_VELOCITY       (100)//(1)             //m/s
 #define LIFT_GEAR_FACTOR                    (10 * _2PI)     //rad/m
 #define LIFT_VERTICAL_TRAVEL                (0.15f)         //m
 
