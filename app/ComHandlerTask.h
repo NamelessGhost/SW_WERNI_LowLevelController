@@ -28,12 +28,15 @@ protected:
   virtual void handleMessage(Message* message);
 
 private:
+  void ProcessReceivedData(void);
   bool FindPreamble(void);
   uint8_t CalculateChecksum(const void* pData, size_t size);
   void TransmitPendingData(void);
+  void SendCommand(COMMAND cmd, data_union_t* pData = NULL);
+  void AddMessageToTxBuffer(message_t* pMsg);
+
   void UartRxDataAvailableCb(UART_HandleTypeDef* huart) override;
   void UartRxRtoCallback(UART_HandleTypeDef* huart) override;
-  void ProcessReceivedData(void);
   void UartRxFifoGetData(void);
 
   static ComHandlerTask* mspThis;

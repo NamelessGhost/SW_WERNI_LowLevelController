@@ -52,17 +52,8 @@ void ComHandlerTask::handleMessage(Message* message)
     }
     case MSG_ID_WERNI_MESSAGE:
     {
-      //TODO:Fix this, its ugly! Check if buffer has space first! Add memcpy interface to buffer!
-      mTxBuffer.WriteByte('A');
-      mTxBuffer.WriteByte('A');
-      mTxBuffer.WriteByte('A');
-      mTxBuffer.WriteByte('B');
-      for(int i=0; i<sizeof(message_t);i++)
-      {
-        mTxBuffer.WriteByte(((unsigned char*)message->mem()->memory)[i]);
-      }
-      mTxBuffer.WriteByte(12);  //CRC hahaha
-      TransmitPendingData();
+      message_t lMessage = *(message_t*)(message->mem()->memory);
+      SendCommand((COMMAND)lMessage.cmd, &lMessage.dataUnion);
       break;
     }
     case MSG_ID_TIMEOUT:
@@ -70,7 +61,6 @@ void ComHandlerTask::handleMessage(Message* message)
       switch(message->data().longword)
       {
         case TimerComHandlerUpdate:
-          //HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
           TransmitPendingData();
           ProcessReceivedData();
           break;
@@ -95,9 +85,9 @@ void ComHandlerTask::ProcessReceivedData(void)
     mRxBuffer.ReadBytes(sizeof(lReceivedMessage), (void*)&lReceivedMessage);
 
     uint8_t lChecksum = CalculateChecksum(&lReceivedMessage, sizeof(lReceivedMessage) - sizeof(lReceivedMessage.checksum));
-    if(lChecksum == lReceivedMessage.checksum)
+    if(lChecksum == lReceivedMessage.checksum)  //If checksum matches
     {
-      //TODO:SendCommand(ACK)
+      SendCommand(CMD_ACKNOWLEDGE);
       //Create memory message and send to Werni Task
       Message* lpMsg = Message::reserve(MSG_ID_WERNI_MESSAGE, WerniTaskId, sizeof(lReceivedMessage));
       memcpy(lpMsg->mem()->memory, &lReceivedMessage, sizeof(lReceivedMessage));
@@ -105,7 +95,7 @@ void ComHandlerTask::ProcessReceivedData(void)
     }
     else
     {
-      //TODO:SendCommand(CRC_ERR)
+      SendCommand(CMD_CRC_ERROR);
     }
   }
 }
@@ -132,6 +122,43 @@ void ComHandlerTask::TransmitPendingData(void)
   while((__HAL_UART_GET_FLAG(mpHuart,UART_FLAG_TXFNF) == true) && (mTxBuffer.BytesAvailable() > 0))
   {
     mpHuart->Instance->TDR = mTxBuffer.ReadByte();    //Write byte into uart tx fifo
+  }
+}
+
+void ComHandlerTask::SendCommand(COMMAND cmd, data_union_t* pData)
+{
+  message_t lMessage;
+
+  lMessage.cmd = cmd;
+
+  //Messages can have empty data fields, then just the command is relevant
+  if(pData != NULL)
+  {
+    lMessage.dataUnion = *pData;
+  }
+  else
+  {
+    memset((void*)&lMessage.dataUnion, 0U,  sizeof(data_union_t));
+  }
+  lMessage.checksum = CalculateChecksum((void*)&lMessage, sizeof(COMMAND) + sizeof(data_union_t));
+
+  AddMessageToTxBuffer(&lMessage);
+  TransmitPendingData();
+}
+
+void ComHandlerTask::AddMessageToTxBuffer(message_t* pMsg)
+{
+  //TODO:Fix this, its ugly! Check if buffer has space first! Add memcpy interface to buffer!
+
+  //Preamble
+  mTxBuffer.WriteByte('A');
+  mTxBuffer.WriteByte('A');
+  mTxBuffer.WriteByte('A');
+  mTxBuffer.WriteByte('B');
+
+  for(uint32_t i=0; i<sizeof(message_t); i++)
+  {
+    mTxBuffer.WriteByte(((unsigned char*)pMsg)[i]);
   }
 }
 
