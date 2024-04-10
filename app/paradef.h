@@ -18,8 +18,9 @@
 #define STEPPER_TIMER_PRESCALER             (850)         //Timer internal prescaler
 #define STEPPER_TIMER_CNT_FREQUENCY         (STEPPER_TIMER_FREQUENCY / STEPPER_TIMER_PRESCALER)
 #define STEPPER_TIMER_MAX_CHANNELS          (4)
-#define STEPPER_USE_UART
+//TODO: Define this after soldering bridges on stepper drivers #define STEPPER_USE_UART
 
+//Stepper default motion parameters
 #define STEPPER_START_ANGULAR_VELOCITY      (1 * PI)    //rad/s
 #define STEPPER_TARGET_ANGULAR_VELOCITY     (2 * PI)    //rad/s
 #define STEPPER_ANGULAR_ACCELERATION        (2 * PI)    //rad/s^2
@@ -28,15 +29,25 @@
 #define STEPPER_DRIVER_STEP_FACTOR          (1.0f/2)    //Half-stepping
 #define STEPPER_MOTOR_STEP_FACTOR           (1.0f/200)  //Motor 200Steps/rotation
 
-#define COMHANDLER_UART_HANDLE				&huart1 //&hlpuart1	  //UART peripheral
+#define COMHANDLER_UART_HANDLE				      &hlpuart1 //&huart1	  //UART peripheral
 #define COMHANDLER_UART_RXBUF_SIZE          (256)       //Rx Buffer size in bytes
 #define COMHANDLER_UART_TXBUF_SIZE          (256)       //Rx Buffer size in bytes
 #define COMHANDLER_UART_PREAMBLE            ("AAAB")
 #define COMHANDLER_UART_PREAMBLE_LEN        (4)
 
-#define CUBEGRID_HOMING_ANGULAR_VELOCITY    (1 * PI)    //rad/s
-#define CUBEGRID_TARGET_ANGULAR_VELOCITY    (2 * PI)    //rad/S
-#define CUBEGRID_GEAR_FACTOR                (3)
+//Cubegrid motion parameters
+#define CUBEGRID_HOMING_ANGULAR_VELOCITY    (2 * PI)        //rad/s
+#define CUBEGRID_TARGET_ANGULAR_VELOCITY    (5 * PI)        //rad/S
+#define CUBEGRID_ANGULAR_ACCELERATION       (70 * PI)       //rad/s^2
+#define CUBEGRID_GEAR_FACTOR                (4)
+//Configuration for timer in PWM input mode
+#define CUBEGRID_HALL_IC_TIMER_HANDLE		    (&htim2)
+#define CUBEGRID_HALL_IC_CH_PERIOD			    TIM_CHANNEL_1
+#define CUBEGRID_HALL_IC_CH_DUTYCYCLE		    TIM_CHANNEL_2
+//HALL-Sensor PWM frequency limits(1.8kHz - 2.2kHz)
+#define CUBEGRID_HALL_SIGNAL_PERIOD_MIN     (77272)
+#define CUBEGRID_HALL_SIGNAL_PERIOD_MAX     (94444)
+#define CUBEGRID_HALL_SIGNAL_AVERAGING      (10)
 
 #define LIFT_HOMING_VERTICAL_VELOCITY       (0.1f)          //m/s
 #define LIFT_TARGET_VERTICAL_VELOCITY       (100)//(1)             //m/s

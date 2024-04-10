@@ -24,6 +24,8 @@ mMagazineSlotBlue(BLUE)
   mUpdateTimer.setInterval(10);
   mUpdateTimer.setSingleShot(false);
   mUpdateTimer.start();
+
+  mCubeGrid.DoHoming();
 }
 
 WerniTask* WerniTask::instance(void)

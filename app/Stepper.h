@@ -16,6 +16,8 @@
 
 #define FULL_ROTATION_RAD   _2PI
 #define HALF_ROTATION_RAD   PI
+#define FULL_STEP_RAD     _2PI/200
+#define HALF_STEP_RAD     _2PI/400
 
 enum StepperState {
   OFF,

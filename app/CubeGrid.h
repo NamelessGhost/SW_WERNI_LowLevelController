@@ -24,6 +24,12 @@ private:
   bool ClearToRotate(void);
   float CalculateMotorRotationAngle(int16_t degrees);
 
+  void EnableHallSensor(void);
+  void DisableHallSensor(void);
+  uint32_t GetHallSensorValue(void);
+
+  uint32_t mHallSensorMaxValue;
+
   Stepper* mpDriveMotor;
   StepperConfig_t mDriveMotorConf;
 };
