@@ -44,8 +44,8 @@ void CubeGrid::Rotate(int16_t degrees)
 void CubeGrid::DoHoming(void)
 {
   assert_param(ClearToRotate());
-  uint32_t lSensorValue;
-
+  static uint32_t lSensorValue;
+  lSensorValue = 0;
   //1.) Reduce speed
   mDriveMotorConf.TargetAngularVelocity = CUBEGRID_HOMING_ANGULAR_VELOCITY * CUBEGRID_GEAR_FACTOR;
   mpDriveMotor->SetConfiguration(mDriveMotorConf);
@@ -61,22 +61,22 @@ void CubeGrid::DoHoming(void)
     {
       mHallSensorMaxValue = lSensorValue;
     }
-    vTaskDelay(pdMS_TO_TICKS(1));
+    vTaskDelay(pdMS_TO_TICKS(10));
   }
   mpDriveMotor->StopRotation();
 
 
   //4.) Single step until we reach highest Hall-Sensor value
   mHallSensorMaxValue = 0;
-  while(mHallSensorMaxValue < (lSensorValue = GetHallSensorValue()))
+  while(mHallSensorMaxValue < ((lSensorValue = GetHallSensorValue()) + 100))
    {
      mHallSensorMaxValue = lSensorValue;
-     mpDriveMotor->StartRotationBlocking(-HALF_STEP_RAD * CUBEGRID_GEAR_FACTOR);
+     mpDriveMotor->StartRotationBlocking(-FULL_STEP_RAD * 2);
      vTaskDelay(pdMS_TO_TICKS(10));
    }
 
   //5.) Take one step back because we overstepped
-  mpDriveMotor->StartRotationBlocking(HALF_STEP_RAD * CUBEGRID_GEAR_FACTOR);
+  mpDriveMotor->StartRotationBlocking(FULL_STEP_RAD * 2);
 
   //6.) Reconfigure for normal rotation speed
   mDriveMotorConf.TargetAngularVelocity = CUBEGRID_TARGET_ANGULAR_VELOCITY * CUBEGRID_GEAR_FACTOR;

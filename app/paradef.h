@@ -47,7 +47,8 @@
 //HALL-Sensor PWM frequency limits(1.8kHz - 2.2kHz)
 #define CUBEGRID_HALL_SIGNAL_PERIOD_MIN     (77272)
 #define CUBEGRID_HALL_SIGNAL_PERIOD_MAX     (94444)
-#define CUBEGRID_HALL_SIGNAL_AVERAGING      (10)
+#define CUBEGRID_HALL_SIGNAL_AVERAGING      (20)
+#define CUBEGRID_HALL_SIGNAL_THRESHOLD      (45000)
 
 #define LIFT_HOMING_VERTICAL_VELOCITY       (0.1f)          //m/s
 #define LIFT_TARGET_VERTICAL_VELOCITY       (100)//(1)             //m/s
