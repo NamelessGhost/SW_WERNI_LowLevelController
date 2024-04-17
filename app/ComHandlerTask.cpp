@@ -28,7 +28,7 @@ ComHandlerTask::ComHandlerTask(TaskId id, const char* name):
   mpUpdateTimer->start();
 
   mpHuart = COMHANDLER_UART_HANDLE;
-
+  mLastMessageId = 0;
   __HAL_UART_ENABLE_IT(mpHuart, UART_IT_RXFT);    //Rx FIFO threashold reached interrupt	//TODO:Put in message start
 }
 
@@ -75,7 +75,7 @@ void ComHandlerTask::handleMessage(Message* message)
   }
 }
 
-//TODO:Check if message ID is duplicate, if case then send NACK
+
 void ComHandlerTask::ProcessReceivedData(void)
 {
   message_t lReceivedMessage;
@@ -88,10 +88,19 @@ void ComHandlerTask::ProcessReceivedData(void)
     if(lChecksum == lReceivedMessage.checksum)  //If checksum matches
     {
       SendCommand(CMD_ACKNOWLEDGE);
-      //Create memory message and send to Werni Task
-      Message* lpMsg = Message::reserve(MSG_ID_WERNI_MESSAGE, WerniTaskId, sizeof(lReceivedMessage));
-      memcpy(lpMsg->mem()->memory, &lReceivedMessage, sizeof(lReceivedMessage));
-      lpMsg->sendMsg();
+      if(lReceivedMessage.id != mLastMessageId) //Check message is not a duplicate
+      {
+        mLastMessageId = lReceivedMessage.id;
+
+        //Create memory message and send to Werni Task
+        Message* lpMsg = Message::reserve(MSG_ID_WERNI_MESSAGE, WerniTaskId, sizeof(lReceivedMessage));
+        memcpy(lpMsg->mem()->memory, &lReceivedMessage, sizeof(lReceivedMessage));
+        lpMsg->sendMsg();
+      }
+      else
+      {
+        SendCommand(CMD_NOT_ACKNOWLEDGE);
+      }
     }
     else
     {

@@ -46,6 +46,8 @@ private:
 
   RingBuffer mTxBuffer;
   RingBuffer mRxBuffer;
+
+  uint8_t mLastMessageId;
 };
 
 #endif /* COMHANDLERTASK_H_ */

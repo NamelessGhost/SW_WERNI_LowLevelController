@@ -66,6 +66,7 @@ typedef union
 
 typedef struct{
   uint8_t cmd;
+  uint8_t id;
   data_union_t dataUnion;
   uint8_t checksum;
 }message_t;
