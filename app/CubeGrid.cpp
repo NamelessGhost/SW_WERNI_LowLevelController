@@ -27,7 +27,6 @@ CubeGrid::CubeGrid(void)
   mDriveMotorConf.AngularAcceleration = CUBEGRID_ANGULAR_ACCELERATION * CUBEGRID_GEAR_FACTOR;
 
   mpDriveMotor = new Stepper(mDriveMotorConf);
-  mpDriveMotor->Enable(true);
 }
 
 CubeGrid::~CubeGrid(void)
@@ -37,8 +36,10 @@ CubeGrid::~CubeGrid(void)
 
 void CubeGrid::Rotate(int16_t degrees)
 {
+  mpDriveMotor->Enable(true);
   assert_param(ClearToRotate());
   mpDriveMotor->StartRotationBlocking(DEG_TO_RAD(degrees) * CUBEGRID_GEAR_FACTOR);
+  mpDriveMotor->Enable(false);
 }
 
 void CubeGrid::DoHoming(void)

@@ -55,13 +55,17 @@ void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOC, BUZZER_Pin|STATUS_LED_Pin|STPR_MS1_Pin|STPR_MS2_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, STPR_EN_MAG_R_Pin|STPR_DIR_MAG_R_Pin|STPR_STP_MAG_R_Pin|STPR_DIR_GRID_Pin
-                          |STPR_DIR_MAG_Y_Pin|STPR_STP_MAG_Y_Pin|STPR_EN_MAG_B_Pin|STPR_DIR_MAG_B_Pin
-                          |STPR_STP_MAG_B_Pin|STPR_EN_GRID_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, STPR_EN_MAG_R_Pin|STPR_EN_MAG_B_Pin|STPR_EN_GRID_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, STPR_EN_LIFT_Pin|STPR_DIR_LIFT_Pin|STPR_STP_LIFT_Pin|STPR_STP_GRID_Pin
-                          |STPR_EN_MAG_Y_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, STPR_DIR_MAG_R_Pin|STPR_STP_MAG_R_Pin|STPR_DIR_GRID_Pin|STPR_DIR_MAG_Y_Pin
+                          |STPR_STP_MAG_Y_Pin|STPR_DIR_MAG_B_Pin|STPR_STP_MAG_B_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOA, STPR_EN_LIFT_Pin|STPR_EN_MAG_Y_Pin, GPIO_PIN_SET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOA, STPR_DIR_LIFT_Pin|STPR_STP_LIFT_Pin|STPR_STP_GRID_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pins : PCPin PCPin PCPin PCPin */
   GPIO_InitStruct.Pin = BUZZER_Pin|STATUS_LED_Pin|STPR_MS1_Pin|STPR_MS2_Pin;

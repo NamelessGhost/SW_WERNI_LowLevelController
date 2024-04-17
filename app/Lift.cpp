@@ -39,7 +39,9 @@ void Lift::MoveUp(void)
 {
   if(mState == LIFT_DOWN)
   {
+    mpDriveMotor->Enable(true);
     mpDriveMotor->StartRotationBlocking(LIFT_VERTICAL_TRAVEL * LIFT_GEAR_FACTOR);
+    mpDriveMotor->Enable(false);
     mState = LIFT_UP;
   }
 }
@@ -48,7 +50,9 @@ void Lift::MoveDown(void)
 {
   if(mState == LIFT_UP)
   {
+    mpDriveMotor->Enable(true);
     mpDriveMotor->StartRotationBlocking(-LIFT_VERTICAL_TRAVEL * LIFT_GEAR_FACTOR);
+    mpDriveMotor->Enable(false);
     mState = LIFT_DOWN;
   }
 }

@@ -59,6 +59,7 @@ MagazineSlot::~MagazineSlot(void)
 
 void MagazineSlot::StartDispensingCubes(uint32_t cnt)
 {
+  mpDriveMotor->Enable(true);
   assert_param(mState == IDLE);
   mState = DISPENSING;
   mpDriveMotor->StartRotation(cnt * DEG_TO_RAD(MAGAZINESLOT_ANGLE_PER_CUBE));
@@ -68,6 +69,7 @@ bool MagazineSlot::CheckFinished(void)
 {
   if(mpDriveMotor->GetState() != ROTATING)
   {
+    mpDriveMotor->Enable(false);
     mState = IDLE;
     return true;
   }
