@@ -47,6 +47,8 @@ void CubeGrid::DoHoming(void)
   assert_param(ClearToRotate());
   static uint32_t lSensorValue;
   lSensorValue = 0;
+
+  mpDriveMotor->Enable(true);
   //1.) Reduce speed
   mDriveMotorConf.TargetAngularVelocity = CUBEGRID_HOMING_ANGULAR_VELOCITY * CUBEGRID_GEAR_FACTOR;
   mpDriveMotor->SetConfiguration(mDriveMotorConf);
@@ -82,6 +84,7 @@ void CubeGrid::DoHoming(void)
   //6.) Reconfigure for normal rotation speed
   mDriveMotorConf.TargetAngularVelocity = CUBEGRID_TARGET_ANGULAR_VELOCITY * CUBEGRID_GEAR_FACTOR;
   mpDriveMotor->SetConfiguration(mDriveMotorConf);
+  mpDriveMotor->Enable(false);
 }
 
 bool CubeGrid::ClearToRotate(void)

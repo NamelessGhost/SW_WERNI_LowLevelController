@@ -90,7 +90,7 @@ void ComHandlerTask::ProcessReceivedData(void)
       SendCommand(CMD_ACKNOWLEDGE);
       if(lReceivedMessage.id != mLastMessageId) //Check message is not a duplicate
       {
-        mLastMessageId = lReceivedMessage.id;
+        mLastMessageId = 0;//lReceivedMessage.id;
 
         //Create memory message and send to Werni Task
         Message* lpMsg = Message::reserve(MSG_ID_WERNI_MESSAGE, WerniTaskId, sizeof(lReceivedMessage));

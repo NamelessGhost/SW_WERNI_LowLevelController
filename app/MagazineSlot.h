@@ -36,6 +36,7 @@ public:
 private:
   Stepper* mpDriveMotor;
   StepperConfig_t mDriveMotorConf;
+  int32_t mInvertRotationDirection;   //-1 or 1, -1 inverts rotation direction
 };
 
 #endif /* MAGAZINESLOT_H_ */

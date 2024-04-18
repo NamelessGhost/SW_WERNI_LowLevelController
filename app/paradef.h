@@ -22,8 +22,8 @@
 
 //Stepper default motion parameters
 #define STEPPER_START_ANGULAR_VELOCITY      (1 * PI)    //rad/s
-#define STEPPER_TARGET_ANGULAR_VELOCITY     (2 * PI)    //rad/s
-#define STEPPER_ANGULAR_ACCELERATION        (2 * PI)    //rad/s^2
+#define STEPPER_TARGET_ANGULAR_VELOCITY     (10 * PI)    //rad/s
+#define STEPPER_ANGULAR_ACCELERATION        (70 * PI)    //rad/s^2
 #define STEPPER_ROLLOUT_ANGLE               (PI / 100)  //rad
 
 #define STEPPER_DRIVER_STEP_FACTOR          (1.0f/2)    //Half-stepping
@@ -56,6 +56,7 @@
 #define LIFT_VERTICAL_TRAVEL                (0.15f)         //m
 
 #define MAGAZINESLOT_ANGLE_PER_CUBE         (300)           //degrees
+#define MAGAZINESLOT_INVERT_ROTATION        (true)
 
 #define ENERGY_MEASUREMENT_TIMER_HANDLE           (&htim7)        //Used to trigger regular adc conversions
 #define ENERGY_MEASUREMENT_TIMER_CNT_PERIOD       (0.01f)         //Timer update period

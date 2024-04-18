@@ -49,6 +49,8 @@ MagazineSlot::MagazineSlot(MagazineSlotColor color)
   mDriveMotorConf.TargetAngularVelocity = CUBEGRID_TARGET_ANGULAR_VELOCITY * CUBEGRID_GEAR_FACTOR;
   mpDriveMotor = new Stepper(mDriveMotorConf);
 
+  mInvertRotationDirection = MAGAZINESLOT_INVERT_ROTATION ? -1: 1;
+
   mState = IDLE;
 }
 
@@ -62,7 +64,7 @@ void MagazineSlot::StartDispensingCubes(uint32_t cnt)
   mpDriveMotor->Enable(true);
   assert_param(mState == IDLE);
   mState = DISPENSING;
-  mpDriveMotor->StartRotation(cnt * DEG_TO_RAD(MAGAZINESLOT_ANGLE_PER_CUBE));
+  mpDriveMotor->StartRotation(cnt * DEG_TO_RAD(MAGAZINESLOT_ANGLE_PER_CUBE) * mInvertRotationDirection);
 }
 
 bool MagazineSlot::CheckFinished(void)
