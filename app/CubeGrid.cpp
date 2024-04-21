@@ -27,6 +27,8 @@ CubeGrid::CubeGrid(void)
   mDriveMotorConf.AngularAcceleration = CUBEGRID_ANGULAR_ACCELERATION * CUBEGRID_GEAR_FACTOR;
 
   mpDriveMotor = new Stepper(mDriveMotorConf);
+
+  mHallSensorMaxValue = 0;
 }
 
 CubeGrid::~CubeGrid(void)

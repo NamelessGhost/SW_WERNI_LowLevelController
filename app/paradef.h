@@ -57,14 +57,20 @@
 
 #define MAGAZINESLOT_ANGLE_PER_CUBE         (300)           //degrees
 
-#define ENERGY_MEASUREMENT_TIMER_HANDLE           (&htim7)        //Used to trigger regular adc conversions
+#define ADC_PERIODIC_TRIGGER_TIMER_HANDLE         (&htim7)        //Used to trigger regular adc conversions
+
 #define ENERGY_MEASUREMENT_TIMER_CNT_PERIOD       (0.01f)         //Timer update period
 #define ENERGY_MEASUREMENT_ADC_HANDLE             (&hadc1)
 #define ENERGY_MEASUREMENT_ADC_VREF               (3.3f)          //ADC fullscale voltage
 #define ENERGY_MEASUREMENT_ADC_RESOLUTION         (4096)          //12bit
-#define ENERGY_MEASUREMENT_VDD_DIF_GAIN           (90.9091e-3f) //Voltage divider gain R2/(R1+R2)
+#define ENERGY_MEASUREMENT_VDD_DIF_GAIN           (90.9091e-3f)   //Voltage divider gain R2/(R1+R2)
 #define ENERGY_MEASUREMENT_CURR_AMP_GAIN          (50)            //INA186 gain in V/V
 #define ENERGY_MEASUREMENT_CURR_SHUNT_R           (0.02f)         //Shunt resistance in Ohm
+
+#define LIGHT_BARRIER_PWM_TIMER_HANDLE            (&htim3)        //Used to generate PWM-signal driving LED
+#define LIGHT_BARRIER_PWM_TIMER_CHANNEL           (TIM_CHANNEL_2)
+#define LIGHT_BARRIER_INPUTS_ADC_HANDLE           (&hadc2)
+#define LIGHT_BARRIER_CLOSED_THRESHOLD            (1000)          //Threshold voltage in ADC-samples 0-4096 -> 0-3.3V
 
 #endif /* PARADEF_H_ */
 

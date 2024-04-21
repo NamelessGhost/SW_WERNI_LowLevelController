@@ -10,6 +10,7 @@
 
 #include "Stepper.h"
 #include "paradef.h"
+#include "LightBarrier.h"
 
 class CubeGrid
 {
@@ -32,6 +33,8 @@ private:
 
   Stepper* mpDriveMotor;
   StepperConfig_t mDriveMotorConf;
+
+  LightBarrier mLightBarrier;
 };
 
 #endif /* CUBEGRID_H_ */

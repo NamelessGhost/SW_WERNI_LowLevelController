@@ -35,7 +35,7 @@ EnergyMeasurement::EnergyMeasurement()
   mEnergy5V = 0;
 
 
-  HAL_TIM_Base_Start_IT(ENERGY_MEASUREMENT_TIMER_HANDLE);
+  HAL_TIM_Base_Start_IT(ADC_PERIODIC_TRIGGER_TIMER_HANDLE);
 }
 
 EnergyMeasurement::~EnergyMeasurement()
@@ -61,7 +61,7 @@ void EnergyMeasurement::AdcConvCompleteCb(ADC_HandleTypeDef *hadc)
 
 void EnergyMeasurement::TimPeriodElapsedCb(TIM_HandleTypeDef *htim)
 {
-  if(htim->Instance == ENERGY_MEASUREMENT_TIMER_HANDLE->Instance)
+  if(htim->Instance == ADC_PERIODIC_TRIGGER_TIMER_HANDLE->Instance)
   {
     HAL_ADC_Start_DMA(ENERGY_MEASUREMENT_ADC_HANDLE, mAdcConversionResults, ADC_CHANNELS_SIZE);
   }
