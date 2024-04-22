@@ -35,6 +35,11 @@ private:
   StepperConfig_t mDriveMotorConf;
 
   LightBarrier mLightBarrier;
+
+  struct {
+    uint32_t maxValue;
+    float relativeAngle;
+  }mMagnetInfo;
 };
 
 #endif /* CUBEGRID_H_ */

@@ -227,6 +227,16 @@ StepperState Stepper::GetState(void)
   return mStepperState;
 }
 
+uint32_t Stepper::GetStepsRotated(void)
+{
+  return mStepsRotated;
+}
+
+float Stepper::GetRotationAngle(void)
+{
+  return mCurrentRotationAngle;
+}
+
 bool Stepper::IsTimeToStartDecelerating()
 {
   float lStopAngle = (mCurrentAngularVeloctiy * mCurrentAngularVeloctiy) / (2 * mAngularAcceleration);

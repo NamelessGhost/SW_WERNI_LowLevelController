@@ -80,6 +80,8 @@ public:
   void StopRotation(void);
   void Enable(bool enable);
   StepperState GetState(void);
+  uint32_t GetStepsRotated(void);
+  float GetRotationAngle(void);
 
 protected:
 

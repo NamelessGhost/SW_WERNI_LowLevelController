@@ -55,33 +55,42 @@ void CubeGrid::DoHoming(void)
   mDriveMotorConf.TargetAngularVelocity = CUBEGRID_HOMING_ANGULAR_VELOCITY * CUBEGRID_GEAR_FACTOR;
   mpDriveMotor->SetConfiguration(mDriveMotorConf);
 
-  //2.) Turn in one direction with normal speed
-  mpDriveMotor->StartRotation(FULL_ROTATION_RAD * 2 * CUBEGRID_GEAR_FACTOR);
+  //2.) Do full rotation with reduced speed, search highest sensor value
+  mMagnetInfo.maxValue = 0;
+  mMagnetInfo.relativeAngle = 0;
 
-  //3.) Find magnet
-  mHallSensorMaxValue = 0;
-  while(mHallSensorMaxValue < ((lSensorValue = GetHallSensorValue()) + 1000))
+  mpDriveMotor->StartRotation(FULL_ROTATION_RAD * CUBEGRID_GEAR_FACTOR);
+
+  while(mpDriveMotor->GetState() == ROTATING)
   {
-    if(mHallSensorMaxValue < lSensorValue)
+    lSensorValue = GetHallSensorValue();
+    if(lSensorValue > mMagnetInfo.maxValue)
     {
-      mHallSensorMaxValue = lSensorValue;
+      mMagnetInfo.maxValue = lSensorValue;
+      mMagnetInfo.relativeAngle = mpDriveMotor->GetRotationAngle();
     }
-    vTaskDelay(pdMS_TO_TICKS(10));
   }
-  mpDriveMotor->StopRotation();
 
+  if(mMagnetInfo.maxValue < CUBEGRID_HALL_SIGNAL_THRESHOLD)
+  {
+    //TODO: Implement what to do when no magnet is detected
+    assert_param(false);
+  }
 
-  //4.) Single step until we reach highest Hall-Sensor value
+  //3.) Rotate to position 20 steps away from previous magnet position
+  mpDriveMotor->StartRotationBlocking(mMagnetInfo.relativeAngle - (20 * FULL_STEP_RAD));
+
+  //4.) Dual step until we reach highest Hall-Sensor value
   mHallSensorMaxValue = 0;
   while(mHallSensorMaxValue < ((lSensorValue = GetHallSensorValue()) + 100))
    {
      mHallSensorMaxValue = lSensorValue;
-     mpDriveMotor->StartRotationBlocking(-FULL_STEP_RAD * 2);
+     mpDriveMotor->StartRotationBlocking(FULL_STEP_RAD * 2);
      vTaskDelay(pdMS_TO_TICKS(10));
    }
 
-  //5.) Take one step back because we overstepped
-  mpDriveMotor->StartRotationBlocking(FULL_STEP_RAD * 2);
+  //5.) Take dual step back because we overstepped
+  mpDriveMotor->StartRotationBlocking(-FULL_STEP_RAD * 2);
 
   //6.) Reconfigure for normal rotation speed
   mDriveMotorConf.TargetAngularVelocity = CUBEGRID_TARGET_ANGULAR_VELOCITY * CUBEGRID_GEAR_FACTOR;
