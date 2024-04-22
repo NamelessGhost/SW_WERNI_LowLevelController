@@ -113,6 +113,10 @@ void WerniTask::HandleMessageQueue()
           MoveLift(&lMessage);
           break;
 
+        case CMD_PRIME_MAGAZINE:
+          PrimeMagazine();
+          break;
+
         default:
           assert_param(false);
           break;
@@ -136,6 +140,21 @@ void WerniTask::PlaceCubes(message_t* message)
   mMagazineSlotBlue.StartDispensingCubes(message->dataUnion.cmdPlaceCubes.cubes_blue);
 
   //Wait until all requested cubes have been dispensed
+  while((mMagazineSlotRed.CheckFinished() == false) ||
+        (mMagazineSlotYellow.CheckFinished() == false) ||
+        (mMagazineSlotBlue.CheckFinished() == false))
+  {
+    vTaskDelay(pdMS_TO_TICKS(10));
+  }
+}
+
+void WerniTask::PrimeMagazine(void)
+{
+  mMagazineSlotRed.Prime();
+  mMagazineSlotYellow.Prime();
+  mMagazineSlotBlue.Prime();
+
+  //Wait until all magazines have been primed
   while((mMagazineSlotRed.CheckFinished() == false) ||
         (mMagazineSlotYellow.CheckFinished() == false) ||
         (mMagazineSlotBlue.CheckFinished() == false))

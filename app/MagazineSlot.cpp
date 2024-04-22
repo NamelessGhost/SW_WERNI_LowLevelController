@@ -61,8 +61,8 @@ MagazineSlot::~MagazineSlot(void)
 
 void MagazineSlot::StartDispensingCubes(uint32_t cnt)
 {
-  mpDriveMotor->Enable(true);
   assert_param(mState == IDLE);
+  mpDriveMotor->Enable(true);
   mState = DISPENSING;
   mpDriveMotor->StartRotation(cnt * DEG_TO_RAD(MAGAZINESLOT_ANGLE_PER_CUBE) * mInvertRotationDirection);
 }
@@ -76,4 +76,12 @@ bool MagazineSlot::CheckFinished(void)
     return true;
   }
   return false;
+}
+
+void MagazineSlot::Prime(void)
+{
+  assert_param(mState == IDLE);
+  mpDriveMotor->Enable(true);
+  mState = PRIMEING;
+  mpDriveMotor->StartRotation(DEG_TO_RAD(MAGAZINESLOT_ANGLE_PRIME) * mInvertRotationDirection);
 }

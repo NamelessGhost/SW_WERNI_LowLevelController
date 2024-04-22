@@ -14,6 +14,7 @@
 enum MagazineSlotState {
   IDLE,
   DISPENSING,
+  PRIMEING
 };
 
 enum MagazineSlotColor {
@@ -29,6 +30,7 @@ public:
   virtual ~MagazineSlot();
   void StartDispensingCubes(uint32_t cnt);
   bool CheckFinished(void);
+  void Prime(void);
 
   MagazineSlotState mState;
   MagazineSlotColor mColor;

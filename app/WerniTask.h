@@ -43,6 +43,7 @@ private:
   void HandleMessageQueue(void);
   void RotateGrid(message_t* message);
   void PlaceCubes(message_t* message);
+  void PrimeMagazine(void);
   void MoveLift(message_t* message);
   void SendState(void);
 

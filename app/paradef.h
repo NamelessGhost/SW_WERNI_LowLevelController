@@ -56,6 +56,7 @@
 #define LIFT_VERTICAL_TRAVEL                (0.15f)         //m
 
 #define MAGAZINESLOT_ANGLE_PER_CUBE         (300)           //degrees
+#define MAGAZINESLOT_ANGLE_PRIME            (90)            //degrees
 #define MAGAZINESLOT_INVERT_ROTATION        (true)
 
 #define ADC_PERIODIC_TRIGGER_TIMER_HANDLE         (&htim7)        //Used to trigger regular adc conversions
