@@ -224,8 +224,13 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE BEGIN 6 */
   /* User can add his own implementation to report the file name and line number,
      ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+  __disable_irq();
   __BKPT();
-  while(1);
+  while(1)
+  {
+    HAL_GPIO_TogglePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin);
+    for(uint32_t i = 0; i < 2000000; i++)__NOP();
+  }
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */

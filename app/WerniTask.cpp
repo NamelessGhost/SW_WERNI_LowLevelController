@@ -15,6 +15,7 @@ WerniTask* WerniTask::mspThis = 0;
 WerniTask::WerniTask(TaskId id, const char* name):
 Task(id, name),
 mUpdateTimer(WerniTaskId, TimerWerniUpdate),
+mLedTimer(WerniTaskId, TimerLed),
 mMagazineSlotRed(RED),
 mMagazineSlotYellow(YELLOW),
 mMagazineSlotBlue(BLUE)
@@ -24,6 +25,10 @@ mMagazineSlotBlue(BLUE)
   mUpdateTimer.setInterval(10);
   mUpdateTimer.setSingleShot(false);
   mUpdateTimer.start();
+
+  mLedTimer.setInterval(500);
+  mLedTimer.setSingleShot(false);
+  mLedTimer.start();
 
   mCubeGrid.DoHoming();
 }
@@ -54,7 +59,19 @@ void WerniTask::handleMessage(Message* message)
       break;
 
     case MSG_ID_TIMEOUT:
-      HandleMessageQueue();   //Gets a command out of the build queue and executes it blocking
+      switch(message->data().longword)
+      {
+        case TimerWerniUpdate:
+          HandleMessageQueue();   //Gets a command out of the build queue and executes it blocking
+          break;
+
+        case TimerLed:
+          HAL_GPIO_TogglePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin);
+          break;
+
+        default:
+          break;
+      }
       break;
 
     default:

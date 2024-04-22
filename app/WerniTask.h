@@ -49,6 +49,7 @@ private:
 
   static WerniTask* mspThis;
   Timer mUpdateTimer;
+  Timer mLedTimer;
   std::queue<message_t> mMessageQueue;
 
   CubeGrid mCubeGrid;
