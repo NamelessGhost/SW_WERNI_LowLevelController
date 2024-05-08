@@ -18,6 +18,8 @@ enum TimerId
   TimerInvalid,
   TimerComHandlerUpdate,
   TimerWerniUpdate,
+  TimerIoUpdate,
+  TimerIoStatusUpdate,
   TimerLed
 };
 

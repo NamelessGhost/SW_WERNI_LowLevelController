@@ -26,6 +26,15 @@ enum COMMAND
   CMD_PAUSE_BUILD,
   CMD_RESUME_BUILD,
   CMD_PRIME_MAGAZINE,
+  CMD_SEND_IO_STATE,
+};
+
+enum BTN_STATES
+{
+  BTN_RELEASED,
+  BTN_PRESSED,
+  BTN_SHORT_CLICKED,
+  BTN_LONG_CLICKED,
 };
 
 typedef struct
@@ -56,20 +65,27 @@ typedef struct
   uint8_t dummy4;
 }cmd_send_state_t;
 
+typedef struct
+{
+  uint8_t btnEStopState;
+  uint8_t btnStartState;
+}cmd_send_io_state_t;
+
 typedef union
 {
-  cmd_rotate_grid_t cmdRotateGrid;
-  cmd_place_cubes_t cmdPlaceCubes;
-  cmd_move_lift_t cmdMoveLift;
-  cmd_send_state_t cmdSendState;
-  uint8_t dataField[16];
+  cmd_rotate_grid_t     cmdRotateGrid;
+  cmd_place_cubes_t     cmdPlaceCubes;
+  cmd_move_lift_t       cmdMoveLift;
+  cmd_send_state_t      cmdSendState;
+  cmd_send_io_state_t   cmdSendIoState;
+  uint8_t               dataField[16];
 }data_union_t;
 
 typedef struct{
-  uint8_t cmd;
-  uint8_t id;
-  data_union_t dataUnion;
-  uint8_t checksum;
+  uint8_t       cmd;
+  uint8_t       id;
+  data_union_t  dataUnion;
+  uint8_t       checksum;
 }message_t;
 
 #pragma pack() // Reset alignment to default

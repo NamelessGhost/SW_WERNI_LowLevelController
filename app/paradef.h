@@ -74,5 +74,7 @@
 #define LIGHT_BARRIER_INPUTS_ADC_HANDLE           (&hadc2)
 #define LIGHT_BARRIER_CLOSED_THRESHOLD            (1000)          //Threshold voltage in ADC-samples 0-4096 -> 0-3.3V
 
+#define BUTTON_LONG_PRESS_THRESHOLD_MS            (500)   //Pressing longer than 500ms results in a long press
+
 #endif /* PARADEF_H_ */
 

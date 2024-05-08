@@ -25,6 +25,7 @@ enum TaskId
   TemplateTaskId,
   ComHandlerTaskId,
   WerniTaskId,
+  IoTaskId,
 };
 
 class TaskList
