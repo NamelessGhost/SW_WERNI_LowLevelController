@@ -10,6 +10,7 @@
 #include "app_init.h"
 #include "TemplateTask.h"
 #include "ComHandlerTask.h"
+#include "IoTask.h"
 
 int app_init_done = 0;
 
@@ -19,7 +20,7 @@ void app_init()
 
   ComHandlerTask::instance();
   WerniTask::instance();
-
+  IoTask::instance();
 
   //Periodic CAN timer task
 //  CanTask::instance();

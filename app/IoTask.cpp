@@ -80,7 +80,7 @@ void IoTask::SendIoState()
 {
   message_t lStateMessage;
 
-  lStateMessage.cmd = CMD_SEND_STATE;
+  lStateMessage.cmd = CMD_SEND_IO_STATE;
   lStateMessage.dataUnion.cmdSendIoState.btnEStopState = mBtnEStop.GetState();
   lStateMessage.dataUnion.cmdSendIoState.btnStartState = mBtnStart.GetState();
 

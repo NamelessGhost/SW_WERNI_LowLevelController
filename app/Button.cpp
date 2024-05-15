@@ -16,6 +16,7 @@ Button::Button(GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin)
 
   mState = (HAL_GPIO_ReadPin(mpGPIOx, mGPIO_Pin) ? BTN_PRESSED:BTN_RELEASED);
   mButtonPressedCycles = 0;
+  mStateChanged = false;
 }
 Button::~Button(void)
 {

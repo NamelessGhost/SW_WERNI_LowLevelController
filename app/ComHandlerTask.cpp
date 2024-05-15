@@ -29,6 +29,8 @@ ComHandlerTask::ComHandlerTask(TaskId id, const char* name):
 
   mpHuart = COMHANDLER_UART_HANDLE;
   mLastMessageId = 0;
+  mTxMessageId = 1;
+
   __HAL_UART_ENABLE_IT(mpHuart, UART_IT_RXFT);    //Rx FIFO threashold reached interrupt	//TODO:Put in message start
 }
 
@@ -139,6 +141,7 @@ void ComHandlerTask::SendCommand(COMMAND cmd, data_union_t* pData)
   message_t lMessage;
 
   lMessage.cmd = cmd;
+  lMessage.id = mTxMessageId++;
 
   //Messages can have empty data fields, then just the command is relevant
   if(pData != NULL)
