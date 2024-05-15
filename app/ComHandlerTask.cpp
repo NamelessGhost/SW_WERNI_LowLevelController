@@ -19,19 +19,14 @@ ComHandlerTask::ComHandlerTask(TaskId id, const char* name):
  mTxBuffer(COMHANDLER_UART_TXBUF_SIZE),
  mRxBuffer(COMHANDLER_UART_RXBUF_SIZE)
 {
-  mpIsrEventMsg = Message::reserveIsr(MSG_ID_TEMPLATETASK_EVENT, ComHandlerTaskId, 0);
-
-
   mpUpdateTimer = new Timer(ComHandlerTaskId, TimerComHandlerUpdate);
   mpUpdateTimer->setInterval(10);
   mpUpdateTimer->setSingleShot(false);
-  mpUpdateTimer->start();
+  mpUpdateTimer->stop();
 
   mpHuart = COMHANDLER_UART_HANDLE;
   mLastMessageId = 0;
   mTxMessageId = 1;
-
-  __HAL_UART_ENABLE_IT(mpHuart, UART_IT_RXFT);    //Rx FIFO threashold reached interrupt	//TODO:Put in message start
 }
 
 ComHandlerTask* ComHandlerTask::instance(void)
@@ -49,7 +44,8 @@ void ComHandlerTask::handleMessage(Message* message)
   {
     case MSG_ID_START:
     {
-
+      mpUpdateTimer->start();
+      __HAL_UART_ENABLE_IT(mpHuart, UART_IT_RXFT);    //Receive FIFO threshold reached interrupt
       break;
     }
     case MSG_ID_WERNI_MESSAGE:

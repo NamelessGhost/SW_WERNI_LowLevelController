@@ -10,12 +10,7 @@
 
 #include "Stepper.h"
 #include "paradef.h"
-
-enum LiftState {
-  UNHOMED,
-  LIFT_UP,
-  LIFT_DOWN
-};
+#include "ProtocolDefWERNI.h"
 
 class Lift
 {
@@ -25,11 +20,12 @@ public:
   void MoveUp(void);
   void MoveDown(void);
   void DoHoming(void);
+  LIFT_STATES GetPosition(void);
 
 private:
 
 
-  LiftState mState;
+  LIFT_STATES mState;
   Stepper* mpDriveMotor;
   StepperConfig_t mDriveMotorConf;
 };

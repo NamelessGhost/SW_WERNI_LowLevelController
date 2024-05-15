@@ -30,15 +30,6 @@ protected:
   virtual void handleMessage(Message* message);
 
 private:
-
-  enum STATES
-  {
-    READY,
-    BUILDING,
-    BUILD_PAUSED,
-    BUILD_ABORTED
-  }mState;
-
   void SortWerniMessage(Message* message);
   void HandleMessageQueue(void);
   void RotateGrid(message_t* message);
@@ -46,10 +37,11 @@ private:
   void PrimeMagazine(void);
   void MoveLift(message_t* message);
   void SendState(void);
+  void SendExecutionFinished(COMMAND cmd, bool success = true);
 
   static WerniTask* mspThis;
+  WERNI_STATES mState;
   Timer mUpdateTimer;
-  Timer mLedTimer;
   std::queue<message_t> mMessageQueue;
 
   CubeGrid mCubeGrid;

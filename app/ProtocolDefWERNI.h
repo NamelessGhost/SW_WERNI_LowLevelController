@@ -27,6 +27,9 @@ enum COMMAND
   CMD_RESUME_BUILD,
   CMD_PRIME_MAGAZINE,
   CMD_SEND_IO_STATE,
+  CMD_EXECUTION_FINISHED,
+  CMD_RESET_ENERGY_MEASUREMENT,
+  CMD_RESET_WERNI,    //This command triggers a hardware reset!
 };
 
 enum BTN_STATES
@@ -35,6 +38,21 @@ enum BTN_STATES
   BTN_PRESSED,
   BTN_SHORT_CLICKED,
   BTN_LONG_CLICKED,
+};
+
+enum LIFT_STATES {
+  UNHOMED,
+  LIFT_UP,
+  LIFT_DOWN
+};
+
+enum WERNI_STATES
+{
+  PREPARING,
+  READY,
+  BUILDING,
+  BUILD_PAUSED,
+  BUILD_ABORTED
 };
 
 typedef struct
@@ -59,10 +77,9 @@ typedef enum
 
 typedef struct
 {
-  uint8_t dummy1;
-  uint8_t dummy2;
-  uint8_t dummy3;
-  uint8_t dummy4;
+  float energyConsumption;
+  LIFT_STATES liftState     :8;
+  WERNI_STATES werniState   :8;
 }cmd_send_state_t;
 
 typedef struct
@@ -71,6 +88,12 @@ typedef struct
   uint8_t btnStartState;
 }cmd_send_io_state_t;
 
+typedef struct
+{
+  COMMAND cmd;
+  uint8_t success;
+}cmd_exec_finished_t;
+
 typedef union
 {
   cmd_rotate_grid_t     cmdRotateGrid;
@@ -78,6 +101,7 @@ typedef union
   cmd_move_lift_t       cmdMoveLift;
   cmd_send_state_t      cmdSendState;
   cmd_send_io_state_t   cmdSendIoState;
+  cmd_exec_finished_t   cmdExecFinished;
   uint8_t               dataField[16];
 }data_union_t;
 

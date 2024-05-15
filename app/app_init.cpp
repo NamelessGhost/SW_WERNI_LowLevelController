@@ -12,32 +12,21 @@
 #include "ComHandlerTask.h"
 #include "IoTask.h"
 
-int app_init_done = 0;
-
 void app_init()
 {
-  /////////////////    create tasks
+  // *** Create Tasks ***
 
   ComHandlerTask::instance();
   WerniTask::instance();
   IoTask::instance();
 
-  //Periodic CAN timer task
-//  CanTask::instance();
-//
-//  LopTask::instance();
+  // *** Start Tasks ***
 
+  Message* lpMsgWerniTask = Message::reserve(MSG_ID_START, WerniTaskId);
+  Message* lpMsgComHandlerTask = Message::reserve(MSG_ID_START, ComHandlerTaskId);
+  Message* lpMsgIoTask = Message::reserve(MSG_ID_START, IoTaskId);
 
-  /////////////////    start tasks
-
-  //Periodic CAN timer task
-//  Message* lpMsg = Message::reserve(MSG_ID_START, PeriodicCanTaskId);
-//  lpMsg->sendMsg();
-//
-//  // start CanOpen task
-//  lpMsg = Message::reserve(MSG_ID_START, LopTaskId);
-//  lpMsg->sendMsg();
-//
-//  SET_BLUE_STATE_LED(LED_OFF);
-//  app_init_done = 1;
+  lpMsgComHandlerTask->sendMsg();
+  lpMsgWerniTask->sendMsg();
+  lpMsgIoTask->sendMsg();
 }

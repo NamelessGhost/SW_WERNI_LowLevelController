@@ -77,3 +77,8 @@ void Lift::DoHoming(void)
 
   mState = LIFT_UP;
 }
+
+LIFT_STATES Lift::GetPosition(void)
+{
+  return mState;
+}

@@ -29,6 +29,7 @@ private:
   static IoTask* mspThis;
   Timer mIoUpdateTimer;
   Timer mIoStatusUpdateTimer;
+  Timer mLedTimer;
 
   Button mBtnEStop;
   Button mBtnStart;

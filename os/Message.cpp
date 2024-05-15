@@ -86,10 +86,12 @@ void Message::sendMsg()
     {
       BaseType_t xHigherPriorityTaskWoken = pdFALSE;
       lRes = xQueueSendFromISR(lDestQueue, &lpMessage, &xHigherPriorityTaskWoken);
+      configASSERT(lRes == 1);
     }
     else
     {
       lRes = xQueueSend(lDestQueue, &lpMessage, (TickType_t) 0);
+      configASSERT(lRes == 1);
     }
     configASSERT(lRes == 1);
   }

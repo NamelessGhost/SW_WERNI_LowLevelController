@@ -41,7 +41,6 @@ private:
 
   static ComHandlerTask* mspThis;
   Timer* mpUpdateTimer;
-  Message* mpIsrEventMsg;
   UART_HandleTypeDef* mpHuart;
 
   RingBuffer mTxBuffer;

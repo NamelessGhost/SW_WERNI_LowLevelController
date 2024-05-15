@@ -15,22 +15,15 @@ WerniTask* WerniTask::mspThis = 0;
 WerniTask::WerniTask(TaskId id, const char* name):
 Task(id, name),
 mUpdateTimer(WerniTaskId, TimerWerniUpdate),
-mLedTimer(WerniTaskId, TimerLed),
 mMagazineSlotRed(RED),
 mMagazineSlotYellow(YELLOW),
 mMagazineSlotBlue(BLUE)
 {
-  mState = READY;
+  mState = PREPARING;
 
   mUpdateTimer.setInterval(10);
   mUpdateTimer.setSingleShot(false);
-  mUpdateTimer.start();
-
-  mLedTimer.setInterval(500);
-  mLedTimer.setSingleShot(false);
-  mLedTimer.start();
-
-  mCubeGrid.DoHoming();
+  mUpdateTimer.stop();
 }
 
 WerniTask* WerniTask::instance(void)
@@ -52,6 +45,11 @@ void WerniTask::handleMessage(Message* message)
   switch(message->id())
   {
     case MSG_ID_START:
+      mCubeGrid.DoHoming();
+      //mCubeLift.DoHoming();   //TODO:Enable this to home lift
+
+      mUpdateTimer.start();
+      mState = READY;
       break;
 
     case MSG_ID_WERNI_MESSAGE:
@@ -63,10 +61,6 @@ void WerniTask::handleMessage(Message* message)
       {
         case TimerWerniUpdate:
           HandleMessageQueue();   //Gets a command out of the build queue and executes it blocking
-          break;
-
-        case TimerLed:
-          HAL_GPIO_TogglePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin);
           break;
 
         default:
@@ -87,14 +81,25 @@ void WerniTask::SortWerniMessage(Message* message)
   {
     case CMD_PAUSE_BUILD:
       mState = BUILD_PAUSED;
+      SendExecutionFinished(CMD_PAUSE_BUILD);
       break;
 
     case CMD_RESUME_BUILD:
       mState = READY;
+      SendExecutionFinished(CMD_RESUME_BUILD);
+      break;
+
+    case CMD_RESET_ENERGY_MEASUREMENT:
+      mEnergyMeasurement.ResetEnergy();
+      SendExecutionFinished(CMD_RESET_ENERGY_MEASUREMENT);
       break;
 
     case CMD_GET_STATE:
       SendState();
+      break;
+
+    case CMD_RESET_WERNI:
+      NVIC_SystemReset();
       break;
 
     default:
@@ -138,6 +143,9 @@ void WerniTask::HandleMessageQueue()
           assert_param(false);
           break;
       }
+
+      SendExecutionFinished((COMMAND)lMessage.cmd);
+
       mState = READY;
       mUpdateTimer.start(); //Restart update timer to handle next command in build queue
   }
@@ -201,16 +209,31 @@ void WerniTask::SendState(void)
 {
   message_t lStateMessage;
 
-  //TODO:Actually fill the state here!
-  lStateMessage.cmd = CMD_SEND_STATE;
-  lStateMessage.dataUnion.cmdSendState.dummy1 = 0xCA;
-  lStateMessage.dataUnion.cmdSendState.dummy2 = 0xFF;
-  lStateMessage.dataUnion.cmdSendState.dummy3 = 0xEE;
-  lStateMessage.dataUnion.cmdSendState.dummy4 = 0xAA;
+  memset(&lStateMessage, 0, sizeof(lStateMessage));
 
-  //Create memory message and send to Werni Task
+  lStateMessage.cmd = CMD_SEND_STATE;
+  lStateMessage.dataUnion.cmdSendState.energyConsumption = mEnergyMeasurement.GetEnergy();
+  lStateMessage.dataUnion.cmdSendState.liftState = mCubeLift.GetPosition();
+
+  //Create memory message and send to ComHandler Task
   Message* lpMsg = Message::reserve(MSG_ID_WERNI_MESSAGE, ComHandlerTaskId, sizeof(lStateMessage));
   memcpy(lpMsg->mem()->memory, &lStateMessage, sizeof(lStateMessage));
+  lpMsg->sendMsg();
+}
+
+void WerniTask::SendExecutionFinished(COMMAND cmd, bool success)
+{
+  message_t lMessage;
+
+  memset(&lMessage, 0, sizeof(lMessage));
+
+  lMessage.cmd = CMD_EXECUTION_FINISHED;
+  lMessage.dataUnion.cmdExecFinished.cmd = cmd;
+  lMessage.dataUnion.cmdExecFinished.success = success;
+
+  //Create memory message and send to ComHandler Task
+  Message* lpMsg = Message::reserve(MSG_ID_WERNI_MESSAGE, ComHandlerTaskId, sizeof(lMessage));
+  memcpy(lpMsg->mem()->memory, &lMessage, sizeof(lMessage));
   lpMsg->sendMsg();
 }
 

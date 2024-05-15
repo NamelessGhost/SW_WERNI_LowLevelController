@@ -17,17 +17,21 @@ IoTask::IoTask(TaskId id, const char* name):
 Task(id, name),
 mIoUpdateTimer(IoTaskId, TimerIoUpdate),
 mIoStatusUpdateTimer(IoTaskId, TimerIoStatusUpdate),
+mLedTimer(IoTaskId, TimerLed),
 mBtnEStop(BTN_E_STOP_GPIO_Port, BTN_E_STOP_Pin),
 mBtnStart(BTN_START_GPIO_Port, BTN_START_Pin)
 {
   mIoUpdateTimer.setInterval(20);
   mIoUpdateTimer.setSingleShot(false);
-  mIoUpdateTimer.start();
+  mIoUpdateTimer.stop();
 
-  //Disable this timer if no periodic IO status updates are desired
   mIoStatusUpdateTimer.setInterval(1000);
   mIoStatusUpdateTimer.setSingleShot(false);
-  mIoStatusUpdateTimer.start();
+  mIoStatusUpdateTimer.stop();
+
+  mLedTimer.setInterval(500);
+  mLedTimer.setSingleShot(false);
+  mLedTimer.stop();
 }
 
 IoTask* IoTask::instance()
@@ -44,6 +48,12 @@ void IoTask::handleMessage(Message* message)
 {
   switch(message->id())
   {
+    case MSG_ID_START:
+      mIoUpdateTimer.start();
+      mLedTimer.start();
+      //mIoStatusUpdateTimer.start();  //Enable this timer if periodic IO status updates are desired
+      break;
+
     case MSG_ID_TIMEOUT:
     {
       switch(message->data().longword)
@@ -60,9 +70,12 @@ void IoTask::handleMessage(Message* message)
           break;
         }
 
-
         case TimerIoStatusUpdate:
           SendIoState();
+          break;
+
+        case TimerLed:
+          HAL_GPIO_TogglePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin);
           break;
 
         default:
