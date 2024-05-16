@@ -29,15 +29,15 @@
 #define STEPPER_DRIVER_STEP_FACTOR          (1.0f/2)    //Half-stepping
 #define STEPPER_MOTOR_STEP_FACTOR           (1.0f/200)  //Motor 200Steps/rotation
 
-#define COMHANDLER_UART_HANDLE				      &hlpuart1 //&huart1	  //UART peripheral
+#define COMHANDLER_UART_HANDLE				      &huart1     //&hlpuart1	  //UART peripheral
 #define COMHANDLER_UART_RXBUF_SIZE          (256)       //Rx Buffer size in bytes
 #define COMHANDLER_UART_TXBUF_SIZE          (256)       //Rx Buffer size in bytes
 #define COMHANDLER_UART_PREAMBLE            ("AAAB")
 #define COMHANDLER_UART_PREAMBLE_LEN        (4)
 
 //Cubegrid motion parameters
-#define CUBEGRID_HOMING_ANGULAR_VELOCITY    (2 * PI)        //rad/s
-#define CUBEGRID_TARGET_ANGULAR_VELOCITY    (5 * PI)        //rad/S
+#define CUBEGRID_HOMING_ANGULAR_VELOCITY    (2 * PI)        //rad/s  2
+#define CUBEGRID_TARGET_ANGULAR_VELOCITY    (20 * PI)        //rad/S  5
 #define CUBEGRID_ANGULAR_ACCELERATION       (70 * PI)       //rad/s^2
 #define CUBEGRID_GEAR_FACTOR                (4)
 //Configuration for timer in PWM input mode
@@ -50,10 +50,11 @@
 #define CUBEGRID_HALL_SIGNAL_AVERAGING      (20)
 #define CUBEGRID_HALL_SIGNAL_THRESHOLD      (45000)
 
-#define LIFT_HOMING_VERTICAL_VELOCITY       (0.1f)          //m/s
-#define LIFT_TARGET_VERTICAL_VELOCITY       (100)//(1)             //m/s
-#define LIFT_GEAR_FACTOR                    (10 * _2PI)     //rad/m
-#define LIFT_VERTICAL_TRAVEL                (0.15f)         //m
+#define LIFT_HOMING_VERTICAL_VELOCITY       (0.01f)          //m/s
+#define LIFT_TARGET_VERTICAL_VELOCITY       (0.5)//(0.2)             //m/s
+#define LIFT_ANGULAR_ACCELERATION           (5 * PI)
+#define LIFT_GEAR_FACTOR                    (225 * _2PI)     //rad/m
+#define LIFT_VERTICAL_TRAVEL                (0.062f)         //m
 
 #define MAGAZINESLOT_ANGLE_PER_CUBE         (300)           //degrees
 #define MAGAZINESLOT_ANGLE_PRIME            (90)            //degrees

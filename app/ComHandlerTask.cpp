@@ -85,10 +85,10 @@ void ComHandlerTask::ProcessReceivedData(void)
     uint8_t lChecksum = CalculateChecksum(&lReceivedMessage, sizeof(lReceivedMessage) - sizeof(lReceivedMessage.checksum));
     if(lChecksum == lReceivedMessage.checksum)  //If checksum matches
     {
-      SendCommand(CMD_ACKNOWLEDGE);
       if(lReceivedMessage.id != mLastMessageId) //Check message is not a duplicate
       {
-        mLastMessageId = 0;//lReceivedMessage.id;
+        SendCommand(CMD_ACKNOWLEDGE);
+        mLastMessageId = lReceivedMessage.id;
 
         //Create memory message and send to Werni Task
         Message* lpMsg = Message::reserve(MSG_ID_WERNI_MESSAGE, WerniTaskId, sizeof(lReceivedMessage));

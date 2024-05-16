@@ -24,10 +24,9 @@ Lift::Lift(void)
   mDriveMotorConf.pGpioMS2Output = STPR_MS2_GPIO_Port;
 
   mDriveMotorConf.TargetAngularVelocity = LIFT_TARGET_VERTICAL_VELOCITY * LIFT_GEAR_FACTOR;
+  mDriveMotorConf.AngularAcceleration = LIFT_ANGULAR_ACCELERATION;
 
   mpDriveMotor = new Stepper(mDriveMotorConf);
-  mpDriveMotor->Enable(true);
-  mState = LIFT_UP;    //TODO:DoHoming(); instead!!!!!!!!!!!!!!!!!!!!!
 }
 
 Lift::~Lift(void)
@@ -62,7 +61,8 @@ void Lift::DoHoming(void)
   //1.) Reduce speed, rotate until limit switch is hit
   mDriveMotorConf.TargetAngularVelocity = LIFT_HOMING_VERTICAL_VELOCITY * LIFT_GEAR_FACTOR;
   mpDriveMotor->SetConfiguration(mDriveMotorConf);
-  mpDriveMotor->StartRotation(LIFT_VERTICAL_TRAVEL * 2);   //2 * LIFT_VERTICAL_TRAVEL to make sure we hit limit switch
+  mpDriveMotor->Enable(true);
+  mpDriveMotor->StartRotation(LIFT_VERTICAL_TRAVEL * 2 * LIFT_GEAR_FACTOR);   //2 * LIFT_VERTICAL_TRAVEL to make sure we hit limit switch
 
   //2.) Wait for Limit-Switch signal
   while(HAL_GPIO_ReadPin(LIMIT_LIFT_GPIO_Port, LIMIT_LIFT_Pin) == GPIO_PIN_RESET)
@@ -70,6 +70,7 @@ void Lift::DoHoming(void)
     vTaskDelay(pdMS_TO_TICKS(1));
   }
   mpDriveMotor->StopRotation();
+  mpDriveMotor->Enable(false);
 
   //3.) Reconfigure for normal rotation speed
   mDriveMotorConf.TargetAngularVelocity = LIFT_TARGET_VERTICAL_VELOCITY * LIFT_GEAR_FACTOR;

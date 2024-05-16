@@ -57,8 +57,7 @@ enum WERNI_STATES
 
 typedef struct
 {
-  uint8_t degrees_h;
-  uint8_t degrees_l;
+  int16_t degrees;
 }cmd_rotate_grid_t;
 
 typedef struct

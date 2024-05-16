@@ -46,7 +46,7 @@ void WerniTask::handleMessage(Message* message)
   {
     case MSG_ID_START:
       mCubeGrid.DoHoming();
-      //mCubeLift.DoHoming();   //TODO:Enable this to home lift
+      mCubeLift.DoHoming();   //TODO:Enable this to home lift
 
       mUpdateTimer.start();
       mState = READY;
@@ -153,8 +153,8 @@ void WerniTask::HandleMessageQueue()
 
 void WerniTask::RotateGrid(message_t* message)
 {
-  int16_t lAngle = message->dataUnion.cmdRotateGrid.degrees_h << 8;
-  lAngle |= message->dataUnion.cmdRotateGrid.degrees_l;
+  int16_t lAngle = message->dataUnion.cmdRotateGrid.degrees;
+
   mCubeGrid.Rotate(lAngle);
 }
 

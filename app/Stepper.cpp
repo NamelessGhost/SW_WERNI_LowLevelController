@@ -29,6 +29,8 @@ Stepper::Stepper(StepperConfig_t config) : Iinterruptable()
   mCurrentRotationAngle = 0;			//in rad/s
   mTargetRotationAngle = 0;
   mStepsRotated = 0;
+
+  Enable(false);
 }
 
 StepperConfig_t Stepper::GetDefaultConfiguration()

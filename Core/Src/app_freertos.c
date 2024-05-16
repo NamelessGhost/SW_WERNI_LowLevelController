@@ -187,7 +187,7 @@ void StartIdleTask(void const * argument)
 {
   /* USER CODE BEGIN StartIdleTask */
   /* Infinite loop */
-  for(;;)
+  for(;;) //TODO:Find out why there is a loop here
   {
     MsgPool_init();
     TaskList_init();
