@@ -108,6 +108,9 @@ int main(void)
 
   /* Call init function for freertos objects (in cmsis_os2.c) */
   MX_FREERTOS_Init();
+  NVIC_SetPriorityGrouping(0);
+  SEGGER_SYSVIEW_Conf();
+  SEGGER_SYSVIEW_Start();
 
   /* Start scheduler */
   osKernelStart();

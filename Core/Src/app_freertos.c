@@ -167,7 +167,7 @@ void MX_FREERTOS_Init(void) {
 
   /* Create the thread(s) */
   /* definition and creation of idleTask */
-  osThreadDef(idleTask, StartIdleTask, osPriorityIdle, 0, 256);
+  osThreadDef(idleTask, StartIdleTask, osPriorityLow, 0, 256);
   idleTaskHandle = osThreadCreate(osThread(idleTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
