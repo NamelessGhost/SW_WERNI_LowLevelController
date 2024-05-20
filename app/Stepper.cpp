@@ -20,6 +20,7 @@ Stepper::Stepper(StepperConfig_t config) : Iinterruptable()
   SetConfiguration(config);  //Apply the configuration
 
   mpTimerHandle = STEPPER_STEP_TIMER_HANDLE;
+  mTimerActiveChannel = HAL_TIM_ACTIVE_CHANNEL_CLEARED;
 
   mStepperState = OFF;
   mRotationState = STANDSTILL;
@@ -92,7 +93,12 @@ void Stepper::ReserveTimerChannel(void)
 
 void Stepper::FreeTimerChannel(void)
 {
+  mMutex.lock();
+
+  mTimerActiveChannel = HAL_TIM_ACTIVE_CHANNEL_CLEARED;
   sUsedTimerChannels[ mTimerChannel/4 ] = 0;  //Todo:Beautyfy
+
+  mMutex.unlock();
 }
 
 StepperConfig_t Stepper::GetConfiguration(void)
