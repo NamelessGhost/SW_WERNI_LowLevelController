@@ -46,7 +46,8 @@ MagazineSlot::MagazineSlot(MagazineSlotColor color)
   mDriveMotorConf.GpioPinMS2Output = STPR_MS2_Pin;
   mDriveMotorConf.pGpioMS2Output = STPR_MS2_GPIO_Port;
 
-  mDriveMotorConf.TargetAngularVelocity = CUBEGRID_TARGET_ANGULAR_VELOCITY * CUBEGRID_GEAR_FACTOR;
+  mDriveMotorConf.TargetAngularVelocity = MAGAZINESLOT_TARGET_ANGULAR_VELOCITY;
+  mDriveMotorConf.AngularAcceleration = MAGAZINESLOT_ANGULAR_ACCELERATION;
   mpDriveMotor = new Stepper(mDriveMotorConf);
 
   mInvertRotationDirection = MAGAZINESLOT_INVERT_ROTATION ? -1: 1;
