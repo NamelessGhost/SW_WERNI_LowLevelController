@@ -97,7 +97,7 @@ private:
   void SetDriverStepFactor(float stepFactor);
   //**** Variables ****
   static bool sUsedTimerChannels[];
-  Mutex mMutex;
+  static Mutex sMutex;
   bool mEnabled;
 
   TIM_HandleTypeDef* mpTimerHandle;

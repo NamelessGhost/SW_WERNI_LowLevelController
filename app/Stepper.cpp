@@ -14,6 +14,7 @@
 
 
 bool Stepper::sUsedTimerChannels[STEPPER_TIMER_MAX_CHANNELS] = {0};
+Mutex Stepper::sMutex;
 
 Stepper::Stepper(StepperConfig_t config) : Iinterruptable()
 {
@@ -69,7 +70,7 @@ StepperConfig_t Stepper::GetDefaultConfiguration()
 
 void Stepper::ReserveTimerChannel(void)
 {
-  mMutex.lock();
+  sMutex.lock();
 
   mTimerChannel = -1;
 
@@ -86,19 +87,19 @@ void Stepper::ReserveTimerChannel(void)
     }
   }
 
-  mMutex.unlock();
+  sMutex.unlock();
 
   assert_param(mTimerChannel != -1);   //Stop here if no channel is free
 }
 
 void Stepper::FreeTimerChannel(void)
 {
-  mMutex.lock();
+  sMutex.lock();
 
   mTimerActiveChannel = HAL_TIM_ACTIVE_CHANNEL_CLEARED;
   sUsedTimerChannels[ mTimerChannel/4 ] = 0;  //Todo:Beautyfy
 
-  mMutex.unlock();
+  sMutex.unlock();
 }
 
 StepperConfig_t Stepper::GetConfiguration(void)
