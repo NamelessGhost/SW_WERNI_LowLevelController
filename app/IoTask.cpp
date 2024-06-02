@@ -102,3 +102,10 @@ void IoTask::SendIoState()
   memcpy(lpMsg->mem()->memory, &lStateMessage, sizeof(lStateMessage));
   lpMsg->sendMsg();
 }
+
+// STATIC FUNCTIONS FOR I/O-MANIPULATION
+
+void IoTask::EnableBuzzer(bool enable)
+{
+  HAL_GPIO_WritePin(BUZZER_GPIO_Port, BUZZER_Pin, (GPIO_PinState)enable);
+}

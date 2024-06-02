@@ -30,6 +30,7 @@ enum COMMAND
   CMD_EXECUTION_FINISHED,
   CMD_RESET_ENERGY_MEASUREMENT,
   CMD_RESET_WERNI,    //This command triggers a hardware reset!
+  CMD_ENABLE_BUZZER,
 };
 
 enum BTN_STATES
@@ -54,6 +55,7 @@ enum WERNI_STATES
   BUILD_PAUSED,
   BUILD_ABORTED
 };
+
 
 typedef struct
 {
@@ -93,6 +95,11 @@ typedef struct
   uint8_t success;
 }cmd_exec_finished_t;
 
+typedef struct
+{
+  uint8_t enable;
+}cmd_enable_buzzer_t;
+
 typedef union
 {
   cmd_rotate_grid_t     cmdRotateGrid;
@@ -101,6 +108,7 @@ typedef union
   cmd_send_state_t      cmdSendState;
   cmd_send_io_state_t   cmdSendIoState;
   cmd_exec_finished_t   cmdExecFinished;
+  cmd_enable_buzzer_t   cmdEnableBuzzer;
   uint8_t               dataField[16];
 }data_union_t;
 

@@ -20,6 +20,8 @@ public:
   IoTask(TaskId id, const char* name);
   static IoTask* instance();
 
+  static void EnableBuzzer(bool enable);
+
 protected:
   virtual void handleMessage(Message* message);
 

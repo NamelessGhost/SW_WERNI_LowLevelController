@@ -8,6 +8,7 @@
 #include <WerniTask.h>
 #include "Message.h"
 #include "string.h"
+#include "IoTask.h"
 
 
 WerniTask* WerniTask::mspThis = 0;
@@ -100,6 +101,10 @@ void WerniTask::SortWerniMessage(Message* message)
 
     case CMD_RESET_WERNI:
       NVIC_SystemReset();
+      break;
+
+    case CMD_ENABLE_BUZZER:
+      IoTask::EnableBuzzer((bool)lpMessage->dataUnion.cmdEnableBuzzer.enable);
       break;
 
     default:
