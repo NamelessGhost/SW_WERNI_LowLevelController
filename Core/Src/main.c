@@ -207,8 +207,11 @@ void Error_Handler(void)
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
   __disable_irq();
-  while (1)
+  __BKPT();
+  while(1)
   {
+    HAL_GPIO_TogglePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin);
+    for(uint32_t i = 0; i < 2000000; i++)__NOP();
   }
   /* USER CODE END Error_Handler_Debug */
 }
