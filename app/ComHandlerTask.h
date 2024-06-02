@@ -30,7 +30,7 @@ protected:
 private:
   void ProcessReceivedData(void);
   bool FindPreamble(void);
-  uint8_t CalculateChecksum(const void* pData, size_t size);
+  uint8_t CalculateChecksum(const void* pData, uint32_t size);
   void TransmitPendingData(void);
   void SendCommand(COMMAND cmd, data_union_t* pData = NULL);
   void AddMessageToTxBuffer(message_t* pMsg);

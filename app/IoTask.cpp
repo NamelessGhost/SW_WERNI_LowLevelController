@@ -93,6 +93,8 @@ void IoTask::SendIoState()
 {
   message_t lStateMessage;
 
+  memset(&lStateMessage, 0U, sizeof(lStateMessage));
+
   lStateMessage.cmd = CMD_SEND_IO_STATE;
   lStateMessage.dataUnion.cmdSendIoState.btnEStopState = mBtnEStop.GetState();
   lStateMessage.dataUnion.cmdSendIoState.btnStartState = mBtnStart.GetState();
@@ -102,6 +104,7 @@ void IoTask::SendIoState()
   memcpy(lpMsg->mem()->memory, &lStateMessage, sizeof(lStateMessage));
   lpMsg->sendMsg();
 }
+
 
 // STATIC FUNCTIONS FOR I/O-MANIPULATION
 

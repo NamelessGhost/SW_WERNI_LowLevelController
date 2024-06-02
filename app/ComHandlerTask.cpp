@@ -11,6 +11,7 @@
 #include "ComHandlerTask.h"
 #include "main.h"
 #include "InterruptRouting.h"
+#include "crc.h"
 
 ComHandlerTask* ComHandlerTask::mspThis = 0;
 
@@ -118,10 +119,9 @@ bool ComHandlerTask::FindPreamble(void)
   return false;
 }
 
-uint8_t ComHandlerTask::CalculateChecksum(const void* pData, size_t size)
+uint8_t ComHandlerTask::CalculateChecksum(const void* pData, uint32_t size)
 {
-  //TODO:Implement proper checksum
-  return 12;
+  return HAL_CRC_Calculate(&hcrc, (uint32_t*)pData, size);
 }
 
 void ComHandlerTask::TransmitPendingData(void)
@@ -148,7 +148,7 @@ void ComHandlerTask::SendCommand(COMMAND cmd, data_union_t* pData)
   {
     memset((void*)&lMessage.dataUnion, 0U,  sizeof(data_union_t));
   }
-  lMessage.checksum = CalculateChecksum((void*)&lMessage, sizeof(COMMAND) + sizeof(data_union_t));
+  lMessage.checksum = CalculateChecksum((void*)&lMessage, sizeof(lMessage) - sizeof(lMessage.checksum));
 
   AddMessageToTxBuffer(&lMessage);
   TransmitPendingData();
