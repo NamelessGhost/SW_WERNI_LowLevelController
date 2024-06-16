@@ -63,7 +63,7 @@ void IoTask::handleMessage(Message* message)
           mBtnEStop.PeriodicUpdate(20);
           mBtnStart.PeriodicUpdate(20);
 
-          if(mBtnEStop.CheckStateChanged() || mBtnEStop.CheckStateChanged())
+          if(mBtnEStop.CheckStateChanged() || mBtnStart.CheckStateChanged())
           {
             SendIoState();
           }
