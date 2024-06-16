@@ -29,8 +29,8 @@
 #define STEPPER_DRIVER_STEP_FACTOR          (1.0f/2)      //Half-stepping
 #define STEPPER_MOTOR_STEP_FACTOR           (1.0f/200)    //Motor 200Steps/rotation
 
-//#define COMHANDLER_UART_HANDLE				      &huart1     //UART to Raspberry PI
-#define COMHANDLER_UART_HANDLE              &hlpuart1     //UART to USB debug interface
+#define COMHANDLER_UART_HANDLE				      &huart1     //UART to Raspberry PI
+//#define COMHANDLER_UART_HANDLE              &hlpuart1     //UART to USB debug interface
 #define COMHANDLER_UART_RXBUF_SIZE          (256)         //Rx Buffer size in bytes
 #define COMHANDLER_UART_TXBUF_SIZE          (256)         //Rx Buffer size in bytes
 #define COMHANDLER_UART_PREAMBLE            ("AAAB")
@@ -52,7 +52,7 @@
 #define CUBEGRID_HALL_SIGNAL_THRESHOLD      (45000)
 
 #define LIFT_HOMING_VERTICAL_VELOCITY       (0.01f)         //m/s
-#define LIFT_TARGET_VERTICAL_VELOCITY       (0.07f)         //m/s
+#define LIFT_TARGET_VERTICAL_VELOCITY       (0.05f)         //m/s
 #define LIFT_ANGULAR_ACCELERATION           (50 * PI)
 #define LIFT_GEAR_FACTOR                    (225 * _2PI)    //rad/m
 #define LIFT_VERTICAL_TRAVEL                (0.058f)        //m
