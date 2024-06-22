@@ -45,7 +45,8 @@ EnergyMeasurement::~EnergyMeasurement()
 
 float EnergyMeasurement::GetEnergy(void)
 {
-  return mEnergyVDD + mEnergy5V;
+  //return mEnergyVDD + mEnergy5V;  //5V supplied externally
+  return mEnergyVDD;  //5V supplied via VDD
 }
 
 void EnergyMeasurement::ResetEnergy(void)
